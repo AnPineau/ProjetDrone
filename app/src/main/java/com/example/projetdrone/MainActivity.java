@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
             Exemple: si on va a un endroit sur une map, qu'on change de fragment et qu'on revient sur la map plus
             tard, l'endroit sur la map sera conserve car le fragment n'a jamais ete ferme, seulement cache      */
 
-        // FragmentVue1 desactive car il crash
         fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue2, "2").hide(fragmentVue2).commit();
         fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue3, "3").hide(fragmentVue3).commit();
         fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue1, "1").commit();
