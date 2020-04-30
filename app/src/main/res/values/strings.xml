@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="title_activity_vue2">ActivityVue2</string>
+    <string name="title_vue1">Vue 1</string>
+    <string name="title_vue2">Vue 2</string>
+    <string name="title_vue3">Vue 3</string>
+</resources>
