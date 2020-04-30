@@ -1,9 +1,6 @@
 package com.example.projetdrone;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
 /*import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -37,11 +34,11 @@ import androidx.fragment.app.FragmentManager;
 public class MainActivity extends AppCompatActivity {
 
     // ------------ Ici on declare les fragments et le fragment manager (FragmentVue1 desactive parce qu'il crash)
-    //final Fragment fragmentVue1 = new FragmentVue1();
+    final Fragment fragmentVue1 = new FragmentVue1();
     final Fragment fragmentVue2 = new FragmentVue2();
     final Fragment fragmentVue3 = new FragmentVue3();
     final FragmentManager fm = getSupportFragmentManager();
-    Fragment active = fragmentVue2;
+    Fragment active = fragmentVue1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // ---------- On recupere la barre de navigation en bas et on lui assigne un ItemListener qu'on cree plus bas
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         /* ---------- On demarre tous les fragments et on cache (avec hide) ceux qui sont pas selectionnes
@@ -58,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
             Exemple: si on va a un endroit sur une map, qu'on change de fragment et qu'on revient sur la map plus
             tard, l'endroit sur la map sera conserve car le fragment n'a jamais ete ferme, seulement cache      */
 
-        // FragmentVue1 toujours desactive car il crash
-        //fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue1, "1").hide(fragmentVue1).commit();
+        // FragmentVue1 desactive car il crash
+        fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue2, "2").hide(fragmentVue2).commit();
         fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue3, "3").hide(fragmentVue3).commit();
-        fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue2, "2").commit();
+        fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue1, "1").commit();
 
     } // onCreate
 
@@ -71,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
+                case R.id.navigation_vue1:
+                    fm.beginTransaction().hide(active).show(fragmentVue1).commit();
+                    active = fragmentVue1;
+                    //Toast.makeText(getApplicationContext(), "Vue 1 désactivée", Toast.LENGTH_SHORT).show();
+                    //return false;
+                    return true;
+
                 case R.id.navigation_vue2:
                     fm.beginTransaction().hide(active).show(fragmentVue2).commit();
                     active = fragmentVue2;
@@ -80,13 +84,6 @@ public class MainActivity extends AppCompatActivity {
                     fm.beginTransaction().hide(active).show(fragmentVue3).commit();
                     active = fragmentVue3;
                     return true;
-
-                case R.id.navigation_vue1:
-                    /*fm.beginTransaction().hide(active).show(fragmentVue3).commit();
-                    active = fragmentVue3;*/
-                    Toast.makeText(getApplicationContext(), "Vue 1 désactivée", Toast.LENGTH_SHORT).show();
-                    return false;
-                    //return true;
             }
             return false;
         }
