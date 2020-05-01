@@ -61,29 +61,26 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback, Sensor
         marker = map.addMarker(new MarkerOptions()
                 .position(new LatLng(46.14, -1.16))
                 .title("Bateau"));
-        ready=true;
-    } // onMapReady
+        ready = true;
+    }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if(ready==false && this.isVisible()){
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.147780, -1.168557), 16.0f));
-        }
-        else if(ready==true && this.isVisible()){
+        if (ready == true && this.isVisible()) {
             //avancer / reculer
-            double axisX = (double)sensorEvent.values[0]*0.001;
+            double axisX = (double) sensorEvent.values[0] * 0.001;
 
             //droite / gauche
-            double axisY = (double)sensorEvent.values[1]*0.001;
+            double axisY = (double) sensorEvent.values[1] * 0.001;
 
-            double axisZ = (double)sensorEvent.values[2]*0.001;
+            double axisZ = (double) sensorEvent.values[2] * 0.001;
 
             //((TextView)findViewById(R.id.axeX)).setText(""+axisX);
             //((TextView)findViewById(R.id.axeY)).setText(""+axisY);
             //((TextView)findViewById(R.id.axeZ)).setText(""+axisZ);
-            if(marker != null){
+            if (marker != null) {
                 //map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),map.getCameraPosition().zoom));
-                marker.setPosition(new LatLng(marker.getPosition().latitude-axisY, marker.getPosition().longitude-axisX));
+                marker.setPosition(new LatLng(marker.getPosition().latitude - axisY, marker.getPosition().longitude - axisX));
             }
         /*
         if(map!=null){
