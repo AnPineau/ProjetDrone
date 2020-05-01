@@ -50,6 +50,9 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         bateau = ((MainActivity) Objects.requireNonNull(getActivity())).server.bateau;
         map = googleMap;
+        // Map en mode Hybrid et Zoom sur le port des minimes
+        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 14f));
         if (bateau.trajectoire != null) {
             for (Position pos : this.server.bateau.trajectoire) {
                 LatLng lastPos = new LatLng(pos.getLatitude(), pos.getLongitude());

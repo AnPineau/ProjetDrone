@@ -56,6 +56,9 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback, Sensor
     public void onMapReady(GoogleMap googleMap) {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.147780, -1.168557), 16.0f));
         map = googleMap;
+        // Map en mode Hybrid et Zoom sur le port des minimes
+        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 14f));
 
         //Centre la camera sur la Rochelle
         marker = map.addMarker(new MarkerOptions()

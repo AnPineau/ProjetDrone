@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import androidx.fragment.app.Fragment;
@@ -32,6 +36,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback {
     private ArrayList<Marker> markers = new ArrayList<>();
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private ArrayList<Position> trajectoire = new ArrayList<>();
+    private File waypointsXML;
 
     public FragmentVue2() {
         // constructeur vide requis ne pas enlever
@@ -74,9 +79,10 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        // Map en mode Hybrid et Zoom sur le port des minimes
+        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 14f));
 
-        //Centre la camera sur la Rochelle
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.14, -1.16), 12.0f));
         for (int i = 0; i < trajectoire.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
             LatLng latLng = new LatLng(trajectoire.get(i).getLatitude(), trajectoire.get(i).getLongitude());
@@ -109,6 +115,11 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback {
                             .color(Color.RED)));
                 }
                 lastPos = latLng;
+                try {
+                    writeWaypoints();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -116,7 +127,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback {
             @Override
             public boolean onMarkerClick(final Marker marker) {
                 final int index = markers.indexOf(marker);
-                //Créé une fenetre de dialogue
+                // Fenetre de dialogue
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                 dialog.setMessage(R.string.dialog_question);
                 dialog.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -162,5 +173,11 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback {
         });
     } // onMapReady
 
+    private void writeWaypoints() throws IOException {
+        waypointsXML = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + R.string.app_name + "/" + "waypoints.xml");
+        waypointsXML.createNewFile();
+        FileOutputStream fos = new FileOutputStream(waypointsXML, false);
+
+    }
 
 }
