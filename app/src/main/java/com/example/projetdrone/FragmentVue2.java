@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,17 +118,13 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback {
                 final int index = markers.indexOf(marker);
                 //Créé une fenetre de dialogue
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                final EditText input = new EditText(getActivity());
-                input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                input.setText(Double.toString(trajectoire.get(index).getVitesse()));
-                dialog.setView(input);
-                dialog.setNegativeButton("Changer vitesse", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        trajectoire.get(index).setVitesse(Double.parseDouble(input.getText().toString()));
+                dialog.setMessage(R.string.dialog_question);
+                dialog.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                       dialog.dismiss();
                     }
                 });
-                dialog.setPositiveButton("Supprimer", new DialogInterface.OnClickListener() {
+                dialog.setPositiveButton(R.string.dialog_delete, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

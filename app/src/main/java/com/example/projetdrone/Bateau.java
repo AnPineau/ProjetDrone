@@ -2,9 +2,6 @@ package com.example.projetdrone;
 
 import java.util.ArrayList;
 
-/**
- * 
- */
 
 public  class Bateau {
     public ArrayList<Position> trajectoire;

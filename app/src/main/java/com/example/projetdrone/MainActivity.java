@@ -1,14 +1,8 @@
 package com.example.projetdrone;
 
 import android.os.Bundle;
-/*import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;*/
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -83,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_vue1:
                     fm.beginTransaction().hide(active).show(fragmentVue1).commit();
                     active = fragmentVue1;
-                    //Toast.makeText(getApplicationContext(), "Vue 1 désactivée", Toast.LENGTH_SHORT).show();
-                    //return false;
                     return true;
 
                 case R.id.navigation_vue2:

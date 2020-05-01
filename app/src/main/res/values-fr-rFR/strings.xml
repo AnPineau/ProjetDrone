@@ -4,4 +4,7 @@
     <string name="title_vue1">Suivi</string>
     <string name="title_vue2">Waypoints</string>
     <string name="title_vue3">Contrôle</string>
+    <string name="dialog_question">Supprimer le waypoint ?</string>
+    <string name="dialog_delete">Supprimer</string>
+    <string name="dialog_cancel">Annuler</string>
 </resources>
