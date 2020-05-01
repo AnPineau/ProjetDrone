@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Drone Project</string>
-    <string name="title_vue1">Tracing</string>
-    <string name="title_vue2">Waypoints</string>
-    <string name="title_vue3">Control</string>
+    <string name="title_tracking">Tracking</string>
+    <string name="title_control">Control</string>
+    <string name="title_waypoints">Waypoints</string>
     <string name="dialog_question">Delete waypoint ?</string>
     <string name="dialog_delete">Delete</string>
     <string name="dialog_cancel">Cancel</string>

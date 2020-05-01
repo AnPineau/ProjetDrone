@@ -2,9 +2,9 @@ package com.example.projetdrone;
 
 
 public class Position {
-    private double latitude;
-    private double longitude;
-    private double vitesse;
+    public double latitude;
+    public double longitude;
+    public double vitesse;
 
     public Position(double latitude, double longitude, double vitesse){
         this.latitude = latitude;
