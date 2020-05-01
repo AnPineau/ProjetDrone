@@ -49,14 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        //Connection a NMEA simulator
-        try {
-            Log.d("TCP Server", "Create connection ...");
-            server = new Connection("188.213.28.206", 3000);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
         // ---------- On recupere la barre de navigation en bas et on lui assigne un ItemListener qu'on cree plus bas
