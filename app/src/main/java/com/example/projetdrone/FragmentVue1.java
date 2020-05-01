@@ -24,9 +24,12 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private LatLng previousPos = null;
     private Marker marker;
+    public Connection server;
+    private Bateau bateau;
 
-    public FragmentVue1() {
+    public FragmentVue1(Connection server) {
         // constructeur vide requis ne pas enlever
+        this.server = server;
     }
 
 
@@ -46,8 +49,8 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        if (Bateau.trajectoire != null) {
-            for (Position pos : Bateau.trajectoire) {
+        if (bateau.trajectoire != null) {
+            for (Position pos : this.server.bateau.trajectoire) {
                 LatLng lastPos = new LatLng(pos.getLatitude(), pos.getLongitude());
                 if (previousPos != null) {
 
@@ -58,18 +61,17 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                 }
                 previousPos = lastPos;
             }
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Bateau.getLastPosition().getLatitude(), Bateau.getLastPosition().getLongitude()), 15.0f));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()), 15.0f));
             marker = map.addMarker(new MarkerOptions()
-                    .position(new LatLng(Bateau.getLastPosition().getLatitude(), Bateau.getLastPosition().getLongitude()))
+                    .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
                     .title("Bateau"));
 
             final Handler h = new Handler();
-            final int delay = 5 * 1000;
-
             h.postDelayed(new Runnable() {
+
                 public void run() {
                     //Code executé toute les  5 secondes
-                    LatLng lastPos = new LatLng(Bateau.getLastPosition().getLatitude(), Bateau.getLastPosition().getLongitude());
+                    LatLng lastPos = new LatLng(server.bateau.getLastPosition().getLatitude(), server.bateau.getLastPosition().getLongitude());
                     if (previousPos != null) {
 
                         map.addPolyline(new PolylineOptions()
@@ -80,10 +82,10 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                     //change la position du marqueur
                     marker.setPosition(lastPos);
 
-                    h.postDelayed(this, delay);
+                    h.postDelayed(this, 5000);
                     previousPos = lastPos;
                 }
-            }, delay);
+            }, 5000);
         }
 
     } // onMapReady

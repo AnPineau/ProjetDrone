@@ -1,7 +1,6 @@
 package com.example.projetdrone;
 
 
-
 public class Position {
     private double latitude;
     private double longitude;

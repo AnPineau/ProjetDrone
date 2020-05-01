@@ -33,13 +33,15 @@ import androidx.fragment.app.FragmentManager;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    Connection server;
     // ------------ Ici on declare les fragments et le fragment manager (FragmentVue1 desactive parce qu'il crash)
-    final Fragment fragmentVue1 = new FragmentVue1();
+    Fragment fragmentVue1;
     final Fragment fragmentVue2 = new FragmentVue2();
     final Fragment fragmentVue3 = new FragmentVue3();
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragmentVue1;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +52,13 @@ public class MainActivity extends AppCompatActivity {
         //Connection a NMEA simulator
         try {
             Log.d("TCP Server", "Create connection ...");
-            new Connection("188.213.28.206", 30000);
+            server = new Connection("188.213.28.206", 3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        fragmentVue1 = new FragmentVue1(server);
+
 
         // ---------- On recupere la barre de navigation en bas et on lui assigne un ItemListener qu'on cree plus bas
         BottomNavigationView navigation = findViewById(R.id.navigation);

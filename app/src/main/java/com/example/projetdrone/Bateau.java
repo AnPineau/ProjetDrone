@@ -6,8 +6,8 @@ import java.util.ArrayList;
  * 
  */
 
-public class Bateau {
-    public static ArrayList<Position> trajectoire;
+public  class Bateau {
+    public ArrayList<Position> trajectoire;
 
     public Bateau(){
         trajectoire = new ArrayList<>();
@@ -17,11 +17,18 @@ public class Bateau {
         trajectoire.add(pos);
     }
 
-    public static ArrayList<Position> getTrajectoire(){
+    public ArrayList<Position> getTrajectoire(){
         return trajectoire;
     }
 
-    public static Position getLastPosition(){
+    public Position getLastPosition(){
         return trajectoire.get(trajectoire.size()-1);
+    }
+
+    @Override
+    public String toString() {
+        return "Bateau{" +
+                "trajectoire=" + trajectoire +
+                '}';
     }
 }

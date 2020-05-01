@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import static com.example.projetdrone.Util.GoogleMapToNMEA;
-import static com.example.projetdrone.Util.NMEAtoGoogleMap;
-import static com.example.projetdrone.Util.calculChecksum;
 
 public class Connection implements Runnable {
     private Socket socket;
@@ -47,13 +44,13 @@ public class Connection implements Runnable {
             trame = fullTrame.split(",");
 
             //Vérifie si le checksum est valide si c'est le cas alors ajout de la position dans le tableau contenant la trajectoire du bateau
-            String checksum = calculChecksum(fullTrame);
+            String checksum = Util.calculChecksum(fullTrame);
             Log.d("TCP Server", "TRY tram ...");
 
             if(checksum.equals(trame[12].substring(1,3))){
                 Log.d("TCP Server", "NMEA TRAM OK ...");
 
-                bateau.ajouterPosition(new Position(NMEAtoGoogleMap(trame[3], trame[4]), NMEAtoGoogleMap(trame[5], trame[6]),0));
+                this.bateau.ajouterPosition(new Position( Util.NMEAtoGoogleMap(trame[3], trame[4]), Util.NMEAtoGoogleMap(trame[5], trame[6]),0));
             }
 
         }
