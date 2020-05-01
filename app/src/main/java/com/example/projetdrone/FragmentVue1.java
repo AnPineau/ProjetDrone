@@ -18,18 +18,18 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import androidx.fragment.app.Fragment;
 
+import java.util.Objects;
+
 
 public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap map;
     private LatLng previousPos = null;
     private Marker marker;
-    public Connection server;
     private Bateau bateau;
+    private Connection server;
 
-    public FragmentVue1(Connection server) {
-        // constructeur vide requis ne pas enlever
-        this.server = server;
+    public FragmentVue1(){
     }
 
 
@@ -48,6 +48,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        bateau = ((MainActivity) Objects.requireNonNull(getActivity())).server.bateau;
         map = googleMap;
         if (bateau.trajectoire != null) {
             for (Position pos : this.server.bateau.trajectoire) {

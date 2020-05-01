@@ -15,6 +15,7 @@ public class Connection implements Runnable {
     public Connection(String serverAddress, int serverPort) throws Exception {
         this.socket = new Socket(serverAddress, serverPort);
         this.bateau = new Bateau();
+        System.out.println(this.bateau);
         Thread th = new Thread(this);
         th.start();
     }
@@ -56,6 +57,11 @@ public class Connection implements Runnable {
         }
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Connection{" +
+                "socket=" + socket +
+                ", bateau=" + bateau +
+                '}';
+    }
 }

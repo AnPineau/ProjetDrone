@@ -33,9 +33,9 @@ import androidx.fragment.app.FragmentManager;
 
 
 public class MainActivity extends AppCompatActivity {
-    Connection server;
+    public Connection server;
     // ------------ Ici on declare les fragments et le fragment manager (FragmentVue1 desactive parce qu'il crash)
-    Fragment fragmentVue1;
+    Fragment fragmentVue1 = new FragmentVue1();
     final Fragment fragmentVue2 = new FragmentVue2();
     final Fragment fragmentVue3 = new FragmentVue3();
     final FragmentManager fm = getSupportFragmentManager();
@@ -53,11 +53,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             Log.d("TCP Server", "Create connection ...");
             server = new Connection("188.213.28.206", 3000);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        fragmentVue1 = new FragmentVue1(server);
 
 
         // ---------- On recupere la barre de navigation en bas et on lui assigne un ItemListener qu'on cree plus bas
@@ -102,5 +101,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }; // Navigation Item Listener
 
+    public Connection getServer()
+    {
+        return server;
+    }
 }
 
