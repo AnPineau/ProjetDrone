@@ -1,5 +1,7 @@
 package com.example.projetdrone;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,7 +48,11 @@ public class Connection implements Runnable {
 
             //Vérifie si le checksum est valide si c'est le cas alors ajout de la position dans le tableau contenant la trajectoire du bateau
             String checksum = calculChecksum(fullTrame);
+            Log.d("TCP Server", "TRY tram ...");
+
             if(checksum.equals(trame[12].substring(1,3))){
+                Log.d("TCP Server", "NMEA TRAM OK ...");
+
                 bateau.ajouterPosition(new Position(NMEAtoGoogleMap(trame[3], trame[4]), NMEAtoGoogleMap(trame[5], trame[6]),0));
             }
 

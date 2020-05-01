@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;*/
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -45,6 +46,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        //Connection a NMEA simulator
+        try {
+            Log.d("TCP Server", "Create connection ...");
+            new Connection("188.213.28.206", 30000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // ---------- On recupere la barre de navigation en bas et on lui assigne un ItemListener qu'on cree plus bas
         BottomNavigationView navigation = findViewById(R.id.navigation);
