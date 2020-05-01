@@ -4,16 +4,16 @@
     <item
         android:id="@+id/navigation_vue1"
         android:icon="@drawable/ic_boat"
-        android:title="@string/title_vue1" />
+        android:title="@string/title_tracking" />
 
     <item
         android:id="@+id/navigation_vue2"
-        android:icon="@drawable/ic_flag"
-        android:title="@string/title_vue2" />
+        android:icon="@drawable/ic_controller"
+        android:title="@string/title_control" />
 
     <item
         android:id="@+id/navigation_vue3"
-        android:icon="@drawable/ic_controller"
-        android:title="@string/title_vue3" />
+        android:icon="@drawable/ic_flag"
+        android:title="@string/title_waypoints" />
 
 </menu>

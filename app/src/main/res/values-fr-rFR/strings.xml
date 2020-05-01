@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Projet Drone</string>
-    <string name="title_vue1">Suivi</string>
-    <string name="title_vue2">Waypoints</string>
-    <string name="title_vue3">Contrôle</string>
+    <string name="title_tracking">Suivi</string>
+    <string name="title_control">Pilotage</string>
+    <string name="title_waypoints">Waypoints</string>
     <string name="dialog_question">Supprimer le waypoint ?</string>
     <string name="dialog_delete">Supprimer</string>
     <string name="dialog_cancel">Annuler</string>
