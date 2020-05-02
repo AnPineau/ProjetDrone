@@ -3,6 +3,7 @@ package com.example.projetdrone;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,15 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //Connection a NMEA simulator
+        try {
+            this.server = new Connection("188.213.28.206", 3000);
+            Log.d("TCP Server", "Create connection ...");
+            System.out.println(this.server);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_vue1, container, false);
 
@@ -50,10 +60,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         //bateau = ((MainActivity) Objects.requireNonNull(getActivity())).server.bateau;
         map = googleMap;
-        // Map en mode Hybrid et Zoom sur le port des minimes
-        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 14f));
-        /*if (bateau.trajectoire != null) {
+        if (this.server.bateau.trajectoire != null) {
             for (Position pos : this.server.bateau.trajectoire) {
                 LatLng lastPos = new LatLng(pos.getLatitude(), pos.getLongitude());
                 if (previousPos != null) {
@@ -90,7 +97,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                     previousPos = lastPos;
                 }
             }, 5000);
-        }*/
+        }
 
     } // onMapReady
 }
