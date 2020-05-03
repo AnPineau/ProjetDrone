@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,18 +47,6 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        try {
-            this.server = new Connection("188.213.28.206", 3000);
-            Log.d("TCP Server", "Create connection ...");
-            System.out.println(this.server);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        SensorManager sensorManager=(SensorManager)getActivity().getSystemService(SENSOR_SERVICE);
-        Sensor accel=sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_NORMAL);
-
         View view = inflater.inflate(R.layout.fragment_vue2, container, false);
 
         btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
@@ -87,13 +77,34 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        JoystickView joystick = view.findViewById(R.id.joystick);
+        joystick.setFixedCenter(false);
+        joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
+            @Override
+            public void onMove(int angle, int strength) {
+                Log.d("joystick", "Angle, strength: "+angle+", "+strength);
+                if (ready) {
+                    double Vx = Math.cos(Math.toRadians(angle));
+                    double Vy = Math.sin(Math.toRadians(angle));
+                    double vitesse = 0.0003;
+                    Log.d("joystick", "Vx, Vy: "+Vx+", "+Vy);
+                    if (marker != null) {
+                        double lat = marker.getPosition().latitude + (vitesse * Vy * ((double)strength/100));
+                        double lon = marker.getPosition().longitude + (vitesse * Vx * ((double)strength/100));
+                        marker.setPosition(new LatLng(lat, lon));
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),map.getCameraPosition().zoom));
+                    }
+                }
+            }
+        });
+
 
         return view;
     } // onCreateView
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.147780, -1.168557), 16.0f));
+        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.147780, -1.168557), 16.0f));
         map = googleMap;
         // Map en mode Hybrid et Zoom sur le port des minimes
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -101,7 +112,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
 
         //Centre la camera sur la Rochelle
         marker = map.addMarker(new MarkerOptions()
-                .position(new LatLng(46.14, -1.16))
+                .position(new LatLng(46.1464, -1.1727))
                 .title("Bateau"));
         ready = true;
     }
@@ -110,24 +121,19 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (ready == true && this.isVisible()) {
             //avancer / reculer
-            double axisX = (double) sensorEvent.values[0] * 0.00001*server.bateau.vitesse;
+            /*double axisX = (double) sensorEvent.values[0] * 0.001;
 
             //droite / gauche
-            double axisY = (double) sensorEvent.values[1] * 0.00001*server.bateau.vitesse;
+            double axisY = (double) sensorEvent.values[1] * 0.001;
 
-            double axisZ = (double) sensorEvent.values[2] * 0.00001*server.bateau.vitesse;
+            double axisZ = (double) sensorEvent.values[2] * 0.001;
 
-            double longi;
-            double lat;
             //((TextView)findViewById(R.id.axeX)).setText(""+axisX);
             //((TextView)findViewById(R.id.axeY)).setText(""+axisY);
             //((TextView)findViewById(R.id.axeZ)).setText(""+axisZ);
             if (marker != null) {
                 //map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),map.getCameraPosition().zoom));
-                //marker.setPosition(new LatLng(marker.getPosition().latitude - axisY, marker.getPosition().longitude - axisX));
-                lat=marker.getPosition().latitude-axisX;
-                longi=marker.getPosition().longitude+ axisY;
-                marker.setPosition(new LatLng(lat,longi));
+                marker.setPosition(new LatLng(marker.getPosition().latitude - axisY, marker.getPosition().longitude - axisX));
             }
         /*
         if(map!=null){

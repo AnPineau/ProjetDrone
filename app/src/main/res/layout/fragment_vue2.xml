@@ -6,11 +6,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.projetdrone.FragmentVue2">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <io.github.controlwear.virtual.joystick.android.JoystickView
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/joystick"
+            android:layout_gravity="bottom"
+            android:padding="0dp"
+            android:layout_margin="0dp"
+            custom:JV_buttonSizeRatio="15%"
+            custom:JV_backgroundSizeRatio="25%"
+            custom:JV_buttonColor="#FF888888"
+            custom:JV_borderColor="#88444444"
+            custom:JV_backgroundColor="#88000000"
+            custom:JV_borderWidth="2dp" />
+
+    </FrameLayout>
 
 <LinearLayout
     android:layout_width="match_parent"
