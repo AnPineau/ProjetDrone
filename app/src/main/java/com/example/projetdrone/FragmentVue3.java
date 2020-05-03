@@ -220,8 +220,12 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
                             polylines.remove(index - 1);
                             lastPos = markers.get(markers.size() - 1).getPosition();
                         }
+                        for(int i=0; i<boat.trajectoire.size(); i++){
+                            if(trajectoire.get(index).longitude==boat.trajectoire.get(i).longitude && trajectoire.get(index).latitude==boat.trajectoire.get(i).latitude){
+                                boat.trajectoire.remove(i);
+                            }
+                        }
                         trajectoire.remove(index);
-                        boat.trajectoire.remove(index);
                         // ecriture dans le xml apres suppression du waypoint
                         try {
                             writeWaypoints();
