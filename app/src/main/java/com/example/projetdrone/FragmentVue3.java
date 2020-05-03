@@ -127,14 +127,30 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
                                 boat.trajectoire.remove(0);
                             } else {
                                 if(boat.trajectoire.get(1).latitude < boat.trajectoire.get(0).latitude){
-                                    boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude-0.00001*boat.vitesse;
+                                    if(boat.trajectoire.get(1).latitude > boat.trajectoire.get(0).latitude-0.00001*boat.vitesse ){
+                                        boat.trajectoire.get(0).latitude=boat.trajectoire.get(1).latitude;
+                                    } else {
+                                        boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude-0.00001*boat.vitesse;
+                                    }
                                 } else if(boat.trajectoire.get(1).latitude > boat.trajectoire.get(0).latitude) {
-                                    boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude+0.00001*boat.vitesse;
+                                    if(boat.trajectoire.get(1).latitude < boat.trajectoire.get(0).latitude+0.00001*boat.vitesse ){
+                                        boat.trajectoire.get(0).latitude=boat.trajectoire.get(1).latitude;
+                                    } else {
+                                        boat.trajectoire.get(0).latitude = boat.trajectoire.get(0).latitude + 0.00001 * boat.vitesse;
+                                    }
                                 }
                                 if(boat.trajectoire.get(1).longitude < boat.trajectoire.get(0).longitude){
-                                    boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude-0.00001*boat.vitesse;
+                                    if(boat.trajectoire.get(1).longitude > boat.trajectoire.get(0).longitude-0.00001*boat.vitesse){
+                                        boat.trajectoire.get(0).longitude=boat.trajectoire.get(1).longitude;
+                                    } else {
+                                        boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude-0.00001*boat.vitesse;
+                                    }
                                 } else if(boat.trajectoire.get(1).longitude > boat.trajectoire.get(0).longitude){
-                                    boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude+0.00001*boat.vitesse;
+                                    if(boat.trajectoire.get(1).longitude < boat.trajectoire.get(0).longitude+0.00001*boat.vitesse){
+                                        boat.trajectoire.get(0).longitude=boat.trajectoire.get(1).longitude;
+                                    } else {
+                                        boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude+0.00001*boat.vitesse;
+                                    }
                                 }
                             }
                             marker_boat.setPosition(new LatLng(boat.trajectoire.get(0).latitude,boat.trajectoire.get(0).longitude));
