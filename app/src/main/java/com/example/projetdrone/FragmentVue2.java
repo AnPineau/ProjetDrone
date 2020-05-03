@@ -54,7 +54,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
         }
 
         SensorManager sensorManager=(SensorManager)getActivity().getSystemService(SENSOR_SERVICE);
-        Sensor accel=sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
+        Sensor accel=sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_NORMAL);
 
         View view = inflater.inflate(R.layout.fragment_vue2, container, false);
@@ -117,12 +117,17 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
 
             double axisZ = (double) sensorEvent.values[2] * 0.00001*server.bateau.vitesse;
 
+            double longi;
+            double lat;
             //((TextView)findViewById(R.id.axeX)).setText(""+axisX);
             //((TextView)findViewById(R.id.axeY)).setText(""+axisY);
             //((TextView)findViewById(R.id.axeZ)).setText(""+axisZ);
             if (marker != null) {
                 //map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),map.getCameraPosition().zoom));
-                marker.setPosition(new LatLng(marker.getPosition().latitude - axisY, marker.getPosition().longitude - axisX));
+                //marker.setPosition(new LatLng(marker.getPosition().latitude - axisY, marker.getPosition().longitude - axisX));
+                lat=marker.getPosition().latitude-axisX;
+                longi=marker.getPosition().longitude+ axisY;
+                marker.setPosition(new LatLng(lat,longi));
             }
         /*
         if(map!=null){
