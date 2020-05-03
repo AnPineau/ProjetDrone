@@ -44,7 +44,6 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private ArrayList<Position> trajectoire = new ArrayList<>();
     private File waypointsXML;
-    private Connection server;
 
     public FragmentVue3() {
         // constructeur vide requis ne pas enlever
@@ -54,13 +53,6 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boat=new Bateau();
-        try {
-            this.server = new Connection("188.213.28.206", 3000);
-            Log.d("TCP Server", "Create connection ...");
-            System.out.println(this.server);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         View view = inflater.inflate(R.layout.fragment_vue3, container, false);
 
@@ -76,12 +68,12 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
                     final EditText input = new EditText(getContext());
                     input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    input.setText(Double.toString(server.bateau.getVitesse()));
+                    input.setText(Double.toString(boat.getVitesse()));
                     dialog.setView(input);
                     dialog.setNegativeButton("Changer vitesse", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            server.bateau.setVitesse(Double.parseDouble(input.getText().toString()));
+                            boat.setVitesse(Double.parseDouble(input.getText().toString()));
                         }
                     });
                     dialog.show();
@@ -135,14 +127,14 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
                                 boat.trajectoire.remove(0);
                             } else {
                                 if(boat.trajectoire.get(1).latitude < boat.trajectoire.get(0).latitude){
-                                    boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude-0.0001;
+                                    boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude-0.00001*boat.vitesse;
                                 } else if(boat.trajectoire.get(1).latitude > boat.trajectoire.get(0).latitude) {
-                                    boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude+0.0001;
+                                    boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude+0.00001*boat.vitesse;
                                 }
                                 if(boat.trajectoire.get(1).longitude < boat.trajectoire.get(0).longitude){
-                                    boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude-0.0001;
+                                    boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude-0.00001*boat.vitesse;
                                 } else if(boat.trajectoire.get(1).longitude > boat.trajectoire.get(0).longitude){
-                                    boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude+0.0001;
+                                    boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude+0.00001*boat.vitesse;
                                 }
                             }
                             marker_boat.setPosition(new LatLng(boat.trajectoire.get(0).latitude,boat.trajectoire.get(0).longitude));
