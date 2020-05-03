@@ -12,6 +12,7 @@
 
     <style name="AppTheme2" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/background_launcher</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     </style>
 
 
