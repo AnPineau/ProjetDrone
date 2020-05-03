@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.projetdrone.FragmentVue2">
 
     <fragment
         android:id="@+id/map"
@@ -9,5 +12,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    android:orientation="horizontal"
+    android:layout_weight="0"
+    app:layout_constraintBottom_toBottomOf="parent">
 
+<TextView
+    android:layout_width="0dp"
+    android:layout_height="50dp"
+    android:layout_weight="5"
+    android:layout_gravity="top"/>
+<ImageButton
+    android:id="@+id/speed"
+    android:layout_width="0dp"
+    android:layout_height="50dp"
+    android:layout_weight="1"
+    android:src="@drawable/ic_speed"
+    android:layout_gravity="top"/>
 </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

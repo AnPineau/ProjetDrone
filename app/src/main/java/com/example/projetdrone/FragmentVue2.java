@@ -1,10 +1,14 @@
 package com.example.projetdrone;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +24,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.hardware.SensorEventListener;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 import static android.content.Context.SENSOR_SERVICE;
 
 
 public class FragmentVue2 extends Fragment implements OnMapReadyCallback, SensorEventListener {
+    ImageButton btn_speed;
+    private Connection server;
     private GoogleMap map;
     private Marker marker;
     private boolean ready=false;
@@ -37,11 +45,43 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        try {
+            this.server = new Connection("188.213.28.206", 3000);
+            Log.d("TCP Server", "Create connection ...");
+            System.out.println(this.server);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         SensorManager sensorManager=(SensorManager)getActivity().getSystemService(SENSOR_SERVICE);
         Sensor accel=sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
         sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_NORMAL);
 
         View view = inflater.inflate(R.layout.fragment_vue2, container, false);
+
+        btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
+        // set OnClickListener for Button here
+        //if(btn_speed!=null) {
+        btn_speed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //server.bateau.setVitesse()
+                //final int index = markers.indexOf(marker);
+                //Créé une fenetre de dialogue
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                final EditText input = new EditText(getContext());
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                input.setText(Double.toString(server.bateau.getVitesse()));
+                dialog.setView(input);
+                dialog.setNegativeButton("Changer vitesse", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        server.bateau.setVitesse(Double.parseDouble(input.getText().toString()));
+                    }
+                });
+                dialog.show();
+            }
+        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
@@ -70,12 +110,12 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (ready == true && this.isVisible()) {
             //avancer / reculer
-            double axisX = (double) sensorEvent.values[0] * 0.001;
+            double axisX = (double) sensorEvent.values[0] * 0.00001*server.bateau.vitesse;
 
             //droite / gauche
-            double axisY = (double) sensorEvent.values[1] * 0.001;
+            double axisY = (double) sensorEvent.values[1] * 0.00001*server.bateau.vitesse;
 
-            double axisZ = (double) sensorEvent.values[2] * 0.001;
+            double axisZ = (double) sensorEvent.values[2] * 0.00001*server.bateau.vitesse;
 
             //((TextView)findViewById(R.id.axeX)).setText(""+axisX);
             //((TextView)findViewById(R.id.axeY)).setText(""+axisY);
