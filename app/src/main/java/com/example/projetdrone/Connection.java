@@ -73,7 +73,7 @@ public class Connection extends Thread implements Runnable {
                 if (checksum.equals(trame[9].substring(1, 3))) {
                     Log.d("TCP Server", "NMEA TRAM OK ...");
 
-                    this.bateau.ajouterPosition(new Position(Util.NMEAtoGoogleMap(trame[3], trame[4]), Util.NMEAtoGoogleMap(trame[5], trame[6]), 0));
+                    this.bateau.ajouterPosition(new Position(Util.NMEAtoGoogleMap(trame[3], trame[4]), Util.NMEAtoGoogleMap(trame[5], trame[6])));
                 }
             }
         }

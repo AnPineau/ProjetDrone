@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,12 +33,14 @@ import androidx.fragment.app.Fragment;
 
 public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
 
+    ImageButton btn_speed;
     private GoogleMap map;
     private LatLng lastPos = null;
     private ArrayList<Marker> markers = new ArrayList<>();
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private ArrayList<Position> trajectoire = new ArrayList<>();
     private File waypointsXML;
+    private Connection server;
 
     public FragmentVue3() {
         // constructeur vide requis ne pas enlever
@@ -44,7 +49,41 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try {
+            this.server = new Connection("188.213.28.206", 3000);
+            Log.d("TCP Server", "Create connection ...");
+            System.out.println(this.server);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         View view = inflater.inflate(R.layout.fragment_vue3, container, false);
+
+        btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
+        // set OnClickListener for Button here
+        //if(btn_speed!=null) {
+            btn_speed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //server.bateau.setVitesse()
+                    //final int index = markers.indexOf(marker);
+                    //Créé une fenetre de dialogue
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                    final EditText input = new EditText(getContext());
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    input.setText(Double.toString(server.bateau.getVitesse()));
+                    dialog.setView(input);
+                    dialog.setNegativeButton("Changer vitesse", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            server.bateau.setVitesse(Double.parseDouble(input.getText().toString()));
+                        }
+                    });
+                    dialog.show();
+                }
+            });
+        //}
 
         MapFragment mapFragment = (MapFragment) Objects.requireNonNull(getActivity()).getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -79,7 +118,7 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                trajectoire.add(new Position(latLng.latitude, latLng.longitude, 10));
+                trajectoire.add(new Position(latLng.latitude, latLng.longitude));
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
                 //Centre la camera sur position cliquer
