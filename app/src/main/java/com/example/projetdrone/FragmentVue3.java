@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,9 +34,12 @@ import androidx.fragment.app.Fragment;
 
 public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
 
+    private Handler animateBoat;
     ImageButton btn_speed;
     private GoogleMap map;
     private LatLng lastPos = null;
+    private Bateau boat;
+    private Marker marker_boat;
     private ArrayList<Marker> markers = new ArrayList<>();
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private ArrayList<Position> trajectoire = new ArrayList<>();
@@ -49,7 +53,7 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        boat=new Bateau();
         try {
             this.server = new Connection("188.213.28.206", 3000);
             Log.d("TCP Server", "Create connection ...");
@@ -89,6 +93,7 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
         return view;
     } // onCreateView
 
@@ -100,11 +105,16 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
         // faire un zoom ici
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 20f));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 14f));
+        marker_boat = map.addMarker(new MarkerOptions()
+                .position(new LatLng(46.14, -1.16))
+                .title("Bateau"));
+        boat.trajectoire.add(new Position(marker_boat.getPosition().latitude,marker_boat.getPosition().longitude));
 
         for (int i = 0; i < trajectoire.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
             LatLng latLng = new LatLng(trajectoire.get(i).getLatitude(), trajectoire.get(i).getLongitude());
             markerOptions.position(latLng);
+            boat.trajectoire.add(new Position(trajectoire.get(i).latitude,trajectoire.get(i).longitude));
             markers.add(map.addMarker(markerOptions));
             if (lastPos != null) {
                 polylines.add(map.addPolyline(new PolylineOptions()
@@ -114,16 +124,49 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
             }
             lastPos = latLng;
         }
+
+        animateBoat=new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                        if(boat.trajectoire.size()>1){
+                            if((Math.round(boat.trajectoire.get(1).longitude*1000)==Math.round(boat.trajectoire.get(0).longitude*1000)) &&
+                                    Math.round(boat.trajectoire.get(1).latitude*1000)==Math.round(boat.trajectoire.get(0).latitude*1000) ){
+                                boat.trajectoire.remove(0);
+                            } else {
+                                if(boat.trajectoire.get(1).latitude < boat.trajectoire.get(0).latitude){
+                                    boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude-0.0001;
+                                } else if(boat.trajectoire.get(1).latitude > boat.trajectoire.get(0).latitude) {
+                                    boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude+0.0001;
+                                }
+                                if(boat.trajectoire.get(1).longitude < boat.trajectoire.get(0).longitude){
+                                    boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude-0.0001;
+                                } else if(boat.trajectoire.get(1).longitude > boat.trajectoire.get(0).longitude){
+                                    boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude+0.0001;
+                                }
+                            }
+                            marker_boat.setPosition(new LatLng(boat.trajectoire.get(0).latitude,boat.trajectoire.get(0).longitude));
+                        }
+
+                        animateBoat.postDelayed(this, 300);
+                    }
+        };
+
+        animateBoat.postDelayed(runnable, 1000);
+
         //Listener sur le clic sur la googleMap
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
                 trajectoire.add(new Position(latLng.latitude, latLng.longitude));
+                boat.trajectoire.add(new Position(latLng.latitude,latLng.longitude));
+
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
                 //Centre la camera sur position cliquer
                 map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 markers.add(map.addMarker(markerOptions));
+
 
                 //Trace un trait entre les 2 derniers waypoint créé
                 if (lastPos != null) {
@@ -186,6 +229,7 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
                             lastPos = markers.get(markers.size() - 1).getPosition();
                         }
                         trajectoire.remove(index);
+                        boat.trajectoire.remove(index);
                         // ecriture dans le xml apres suppression du waypoint
                         try {
                             writeWaypoints();
