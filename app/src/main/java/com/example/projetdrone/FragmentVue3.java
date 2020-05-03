@@ -85,6 +85,50 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        animateBoat=new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if(boat.trajectoire.size()>1){
+                    if((Math.round(boat.trajectoire.get(1).longitude*1000)==Math.round(boat.trajectoire.get(0).longitude*1000)) &&
+                            Math.round(boat.trajectoire.get(1).latitude*1000)==Math.round(boat.trajectoire.get(0).latitude*1000) ){
+                        boat.trajectoire.remove(0);
+                    } else {
+                        if(boat.trajectoire.get(1).latitude < boat.trajectoire.get(0).latitude){
+                            if(boat.trajectoire.get(1).latitude > boat.trajectoire.get(0).latitude-0.00001*boat.vitesse ){
+                                boat.trajectoire.get(0).latitude=boat.trajectoire.get(1).latitude;
+                            } else {
+                                boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude-0.00001*boat.vitesse;
+                            }
+                        } else if(boat.trajectoire.get(1).latitude > boat.trajectoire.get(0).latitude) {
+                            if(boat.trajectoire.get(1).latitude < boat.trajectoire.get(0).latitude+0.00001*boat.vitesse ){
+                                boat.trajectoire.get(0).latitude=boat.trajectoire.get(1).latitude;
+                            } else {
+                                boat.trajectoire.get(0).latitude = boat.trajectoire.get(0).latitude + 0.00001 * boat.vitesse;
+                            }
+                        }
+                        if(boat.trajectoire.get(1).longitude < boat.trajectoire.get(0).longitude){
+                            if(boat.trajectoire.get(1).longitude > boat.trajectoire.get(0).longitude-0.00001*boat.vitesse){
+                                boat.trajectoire.get(0).longitude=boat.trajectoire.get(1).longitude;
+                            } else {
+                                boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude-0.00001*boat.vitesse;
+                            }
+                        } else if(boat.trajectoire.get(1).longitude > boat.trajectoire.get(0).longitude){
+                            if(boat.trajectoire.get(1).longitude < boat.trajectoire.get(0).longitude+0.00001*boat.vitesse){
+                                boat.trajectoire.get(0).longitude=boat.trajectoire.get(1).longitude;
+                            } else {
+                                boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude+0.00001*boat.vitesse;
+                            }
+                        }
+                    }
+                }
+                marker_boat.setPosition(new LatLng(boat.trajectoire.get(0).latitude,boat.trajectoire.get(0).longitude));
+                animateBoat.postDelayed(this, 300);
+            }
+        };
+
+        animateBoat.postDelayed(runnable, 1000);
+
 
         return view;
     } // onCreateView
@@ -116,51 +160,6 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
             }
             lastPos = latLng;
         }
-
-        animateBoat=new Handler();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                        if(boat.trajectoire.size()>1){
-                            if((Math.round(boat.trajectoire.get(1).longitude*1000)==Math.round(boat.trajectoire.get(0).longitude*1000)) &&
-                                    Math.round(boat.trajectoire.get(1).latitude*1000)==Math.round(boat.trajectoire.get(0).latitude*1000) ){
-                                boat.trajectoire.remove(0);
-                            } else {
-                                if(boat.trajectoire.get(1).latitude < boat.trajectoire.get(0).latitude){
-                                    if(boat.trajectoire.get(1).latitude > boat.trajectoire.get(0).latitude-0.00001*boat.vitesse ){
-                                        boat.trajectoire.get(0).latitude=boat.trajectoire.get(1).latitude;
-                                    } else {
-                                        boat.trajectoire.get(0).latitude=boat.trajectoire.get(0).latitude-0.00001*boat.vitesse;
-                                    }
-                                } else if(boat.trajectoire.get(1).latitude > boat.trajectoire.get(0).latitude) {
-                                    if(boat.trajectoire.get(1).latitude < boat.trajectoire.get(0).latitude+0.00001*boat.vitesse ){
-                                        boat.trajectoire.get(0).latitude=boat.trajectoire.get(1).latitude;
-                                    } else {
-                                        boat.trajectoire.get(0).latitude = boat.trajectoire.get(0).latitude + 0.00001 * boat.vitesse;
-                                    }
-                                }
-                                if(boat.trajectoire.get(1).longitude < boat.trajectoire.get(0).longitude){
-                                    if(boat.trajectoire.get(1).longitude > boat.trajectoire.get(0).longitude-0.00001*boat.vitesse){
-                                        boat.trajectoire.get(0).longitude=boat.trajectoire.get(1).longitude;
-                                    } else {
-                                        boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude-0.00001*boat.vitesse;
-                                    }
-                                } else if(boat.trajectoire.get(1).longitude > boat.trajectoire.get(0).longitude){
-                                    if(boat.trajectoire.get(1).longitude < boat.trajectoire.get(0).longitude+0.00001*boat.vitesse){
-                                        boat.trajectoire.get(0).longitude=boat.trajectoire.get(1).longitude;
-                                    } else {
-                                        boat.trajectoire.get(0).longitude=boat.trajectoire.get(0).longitude+0.00001*boat.vitesse;
-                                    }
-                                }
-                            }
-                            marker_boat.setPosition(new LatLng(boat.trajectoire.get(0).latitude,boat.trajectoire.get(0).longitude));
-                        }
-
-                        animateBoat.postDelayed(this, 300);
-                    }
-        };
-
-        animateBoat.postDelayed(runnable, 1000);
 
         //Listener sur le clic sur la googleMap
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
