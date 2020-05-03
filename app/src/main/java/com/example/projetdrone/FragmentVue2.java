@@ -34,7 +34,7 @@ import static android.content.Context.SENSOR_SERVICE;
 
 public class FragmentVue2 extends Fragment implements OnMapReadyCallback, SensorEventListener {
     ImageButton btn_speed;
-    private Connection server;
+    private Bateau bateau;
     private GoogleMap map;
     private Marker marker;
     private boolean ready=false;
@@ -46,7 +46,8 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        final Bateau bateau=new Bateau();
+        bateau.setVitesse(10);
         View view = inflater.inflate(R.layout.fragment_vue2, container, false);
 
         btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
@@ -61,12 +62,12 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
                 final EditText input = new EditText(getContext());
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                input.setText(Double.toString(server.bateau.getVitesse()));
+                input.setText(Double.toString(bateau.getVitesse()));
                 dialog.setView(input);
                 dialog.setNegativeButton("Changer vitesse", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        server.bateau.setVitesse(Double.parseDouble(input.getText().toString()));
+                        bateau.setVitesse(Double.parseDouble(input.getText().toString()));
                     }
                 });
                 dialog.show();
@@ -86,7 +87,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
                 if (ready) {
                     double Vx = Math.cos(Math.toRadians(angle));
                     double Vy = Math.sin(Math.toRadians(angle));
-                    double vitesse = 0.0003;
+                    double vitesse = 0.00003*bateau.vitesse;
                     Log.d("joystick", "Vx, Vy: "+Vx+", "+Vy);
                     if (marker != null) {
                         double lat = marker.getPosition().latitude + (vitesse * Vy * ((double)strength/100));
