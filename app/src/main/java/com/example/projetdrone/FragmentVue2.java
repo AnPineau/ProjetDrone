@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.Log;
 import android.text.InputType;
 import android.util.Log;
@@ -33,6 +34,7 @@ import static android.content.Context.SENSOR_SERVICE;
 
 
 public class FragmentVue2 extends Fragment implements OnMapReadyCallback, SensorEventListener {
+    private Handler animateBoat;
     ImageButton btn_speed;
     private Bateau bateau;
     private GoogleMap map;
@@ -46,8 +48,9 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Bateau bateau=new Bateau();
-        bateau.setVitesse(10);
+        //final Bateau bateau=new Bateau();
+        bateau=((MainActivity)getActivity()).bat;
+
         View view = inflater.inflate(R.layout.fragment_vue2, container, false);
 
         btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
@@ -92,7 +95,9 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
                     if (marker != null) {
                         double lat = marker.getPosition().latitude + (vitesse * Vy * ((double)strength/100));
                         double lon = marker.getPosition().longitude + (vitesse * Vx * ((double)strength/100));
-                        marker.setPosition(new LatLng(lat, lon));
+                        //marker.setPosition(new LatLng(lat, lon));
+                        bateau.getTrajectoire().get(0).latitude=lat;
+                        bateau.getTrajectoire().get(0).longitude=lon;
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),map.getCameraPosition().zoom));
                     }
                 }
@@ -113,9 +118,21 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
 
         //Centre la camera sur la Rochelle
         marker = map.addMarker(new MarkerOptions()
-                .position(new LatLng(46.1464, -1.1727))
+                .position(new LatLng(bateau.trajectoire.get(0).latitude, bateau.trajectoire.get(0).longitude))
                 .title("Bateau"));
         ready = true;
+
+        animateBoat=new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                marker.setPosition(new LatLng(bateau.trajectoire.get(0).latitude,bateau.trajectoire.get(0).longitude));
+                animateBoat.postDelayed(this, 300);
+            }
+        };
+
+        animateBoat.postDelayed(runnable, 1000);
+
     }
 
     @Override

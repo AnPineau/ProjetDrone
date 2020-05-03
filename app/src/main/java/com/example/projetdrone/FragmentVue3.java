@@ -52,8 +52,8 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        boat=new Bateau();
-
+        //boat=new Bateau();
+        boat=((MainActivity)getActivity()).bat;
         View view = inflater.inflate(R.layout.fragment_vue3, container, false);
 
         btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
@@ -98,9 +98,9 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 20f));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 14f));
         marker_boat = map.addMarker(new MarkerOptions()
-                .position(new LatLng(46.14, -1.16))
+                .position(new LatLng(boat.trajectoire.get(0).latitude, boat.trajectoire.get(0).longitude))
                 .title("Bateau"));
-        boat.trajectoire.add(new Position(marker_boat.getPosition().latitude,marker_boat.getPosition().longitude));
+        //boat.trajectoire.add(new Position(marker_boat.getPosition().latitude,marker_boat.getPosition().longitude));
 
         for (int i = 0; i < trajectoire.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();

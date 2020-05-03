@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentManager;
 
 public class MainActivity extends AppCompatActivity {
     public Connection server;
+    Bateau bat;
     // ------------ Ici on declare les fragments et le fragment manager (FragmentVue1 desactive parce qu'il crash)
     Fragment fragmentVue1 = new FragmentVue1();
     final Fragment fragmentVue2 = new FragmentVue2();
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        bat=new Bateau();
+        bat.ajouterPosition(new Position(46.14, -1.16));
         setContentView(R.layout.activity_main);
 
 
