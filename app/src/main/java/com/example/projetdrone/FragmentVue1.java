@@ -13,6 +13,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,7 +35,6 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
     public FragmentVue1(){
     }
-
 
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,11 +66,6 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
             map = googleMap;
             // Map en mode Hybrid et Zoom sur le port des minimes
             map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-            try {
-                Thread.sleep(5000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             if(this.server.bateau.trajectoire.size() < 1)
             {
@@ -105,6 +100,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                 }
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()), 15.0f));
                 marker = map.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.defaultMarker(45))
                         .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
                         .title("Bateau"));
 

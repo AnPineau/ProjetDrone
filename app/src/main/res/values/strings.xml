@@ -6,4 +6,5 @@
     <string name="dialog_question">Delete waypoint ?</string>
     <string name="dialog_delete">Delete</string>
     <string name="dialog_cancel">Cancel</string>
+    <string name="marker_deletion">Boat cannot be deleted</string>
 </resources>
