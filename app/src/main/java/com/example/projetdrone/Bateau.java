@@ -27,10 +27,7 @@ public  class Bateau {
     }
 
     public Position getLastPosition(){
-        if(trajectoire.size()>0)
             return trajectoire.get(trajectoire.size()-1);
-        else
-            return new Position(0,0);
     }
 
     @Override

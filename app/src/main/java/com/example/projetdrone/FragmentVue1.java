@@ -40,7 +40,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
         try {
             this.server = new Connection("188.213.28.206", 3000);
             Log.d("TCP Server", "Create connection ...");
-
+            System.out.println(this.server);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -58,31 +58,30 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        //bateau = ((MainActivity) Objects.requireNonNull(getActivity())).server.bateau;
-        map = googleMap;
-        if (this.server.bateau.trajectoire != null) {
-            for (Position pos : this.server.bateau.trajectoire) {
-                LatLng lastPos = new LatLng(pos.getLatitude(), pos.getLongitude());
-                if (previousPos != null) {
-
-                    map.addPolyline(new PolylineOptions()
-                            .add(previousPos, lastPos)
-                            .width(5)
-                            .color(Color.RED));
-                }
-                previousPos = lastPos;
+            //bateau = ((MainActivity) Objects.requireNonNull(getActivity())).server.bateau;
+            map = googleMap;
+            // Map en mode Hybrid et Zoom sur le port des minimes
+            map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            try {
+                Thread.sleep(5000);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()), 15.0f));
-            marker = map.addMarker(new MarkerOptions()
-                    .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
-                    .title("Bateau"));
+            if(this.server.bateau.trajectoire.size() < 1)
+            {
+                while (!this.server.getSocket().isConnected())
+                try {
+                    this.server = new Connection("188.213.28.206", 3000);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
 
-            final Handler h = new Handler();
-            h.postDelayed(new Runnable() {
-
-                public void run() {
-                    //Code executé toute les  5 secondes
-                    LatLng lastPos = new LatLng(server.bateau.getLastPosition().getLatitude(), server.bateau.getLastPosition().getLongitude());
+            if (this.server.bateau.trajectoire != null && this.server.bateau.trajectoire.size() > 0) {
+                for (Position pos : this.server.bateau.trajectoire) {
+                    LatLng lastPos = new LatLng(pos.getLatitude(), pos.getLongitude());
                     if (previousPos != null) {
 
                         map.addPolyline(new PolylineOptions()
@@ -90,15 +89,34 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                                 .width(5)
                                 .color(Color.RED));
                     }
-                    //change la position du marqueur
-                    marker.setPosition(lastPos);
-
-                    h.postDelayed(this, 5000);
                     previousPos = lastPos;
                 }
-            }, 5000);
-        }
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()), 15.0f));
+                marker = map.addMarker(new MarkerOptions()
+                        .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
+                        .title("Bateau"));
 
+                final Handler h = new Handler();
+                h.postDelayed(new Runnable() {
+
+                    public void run() {
+                        //Code executé toute les  5 secondes
+                        LatLng lastPos = new LatLng(server.bateau.getLastPosition().getLatitude(), server.bateau.getLastPosition().getLongitude());
+                        if (previousPos != null) {
+
+                            map.addPolyline(new PolylineOptions()
+                                    .add(previousPos, lastPos)
+                                    .width(5)
+                                    .color(Color.RED));
+                        }
+                        //change la position du marqueur
+                        marker.setPosition(lastPos);
+
+                        h.postDelayed(this, 5000);
+                        previousPos = lastPos;
+                    }
+                }, 5000);
+            }
     } // onMapReady
 }
 
