@@ -44,8 +44,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        bateauPilot=new Bateau();
+        bateauWaypoints=new Bateau();
+        bateauPilot.ajouterPosition(new Position(46.14, -1.16));
+        bateauWaypoints.ajouterPosition(new Position(46.14, -1.16));
+        setContentView(R.layout.activity_main);
 
         setContentView(R.layout.activity_main);
 
