@@ -40,7 +40,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
         try {
             this.server = new Connection("188.213.28.206", 3000);
             Log.d("TCP Server", "Create connection ...");
-            System.out.println(this.server);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
