@@ -53,7 +53,7 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //boat=new Bateau();
-        boat=((MainActivity)getActivity()).bat;
+        boat=((MainActivity)getActivity()).bateauWaypoints;
         View view = inflater.inflate(R.layout.fragment_vue3, container, false);
 
         btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
