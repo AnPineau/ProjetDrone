@@ -42,7 +42,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_vue1, container, false);
         //Connection a NMEA simulator
         try {
-            this.server = new Connection("188.213.28.206", 3000);
+            this.server = new Connection("93.3.29.142", 3000);
             Log.d("TCP Server", "Create connection ...");
             System.out.println(this.server);
         } catch (Exception e) {
@@ -67,6 +67,13 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
             // Map en mode Hybrid et Zoom sur le port des minimes
             map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
+        if(this.server.bateau.trajectoire.size() < 1 )
+            {
+                int compteur = 0;
+                while (this.server.getSocket() == null )
+                try {
+                    this.server = new Connection("93.3.29.142", 3000);
+                  
             if(this.server.bateau.trajectoire.size() < 1)
             {
                 int compteur = 0;
@@ -85,6 +92,13 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                     e.printStackTrace();
                 }
             }
+        while (this.server.bateau.trajectoire.size() < 1){
+            Log.d("testDonnées", server.bateau.trajectoire.toString());
+
+        }
+        Log.d("testDonnées", server.bateau.trajectoire.toString());
+
+        if (this.server.bateau.trajectoire != null && this.server.bateau.trajectoire.size() > 0) {
 
             try {
                 Thread.sleep(5000);
@@ -125,6 +139,11 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                 }
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()), 15.0f));
                 marker = map.addMarker(new MarkerOptions()
+                        .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
+                        .title("Bateau"));
+
+
+
                         .icon(BitmapDescriptorFactory.defaultMarker(45))
                         .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
                         .title("Bateau"));
@@ -140,6 +159,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                     public void run() {
                         //Code executé toute les  5 secondes
                         LatLng lastPos = new LatLng(server.bateau.getLastPosition().getLatitude(), server.bateau.getLastPosition().getLongitude());
+
                         if (previousPos != null) {
 
                             map.addPolyline(new PolylineOptions()
@@ -149,6 +169,8 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                         }
                         //change la position du marqueur
                         marker.setPosition(lastPos);
+                        tv_lat.setText(("lat: "+ String.format("%.4f", marker.getPosition().latitude)));
+                        tv_long.setText(("lon: "+ String.format("%.4f", marker.getPosition().longitude)));
 
                         h.postDelayed(this, 5000);
                         previousPos = lastPos;

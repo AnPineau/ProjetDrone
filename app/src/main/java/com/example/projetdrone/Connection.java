@@ -31,6 +31,7 @@ public class Connection extends Thread implements Runnable {
         try{
             this.socket = new Socket(IP,port);
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            Log.d("connected", socket.toString());
             Log.d("connected", "CONNECTED");
             return true;
         } catch (UnknownHostException e) {
@@ -47,6 +48,13 @@ public class Connection extends Thread implements Runnable {
         String fullTrame = null;
         String[] trame;
         while (true) {
+            if (br == null || socket == null) {
+                connexion();
+            } else {
+                Log.d("testDonnées", "test");
+
+                try {
+                    fullTrame = br.readLine();
 
             if (br == null || socket == null) {
                 connexion();
@@ -65,6 +73,18 @@ public class Connection extends Thread implements Runnable {
                     e.printStackTrace();
                 }
                 trame = fullTrame.split(",");
+
+                if (fullTrame.startsWith("$GPRMC")) {
+                    //Vérifie si le checksum est valide si c'est le cas alors ajout de la position dans le tableau contenant la trajectoire du bateau
+                    String checksum = Util.calculChecksum(fullTrame);
+                    Log.d("TCP Server", "TRY tram ...");
+                    Log.d("connected", fullTrame);
+
+                    if (checksum.equals(trame[12].substring(1, 3))) {
+                        Log.d("TCP Server", "NMEA TRAM OK ...");
+                        this.bateau.ajouterPosition(new Position(Util.NMEAtoGoogleMap(trame[3], trame[4]), Util.NMEAtoGoogleMap(trame[5], trame[6])));
+                    }
+                }
                 System.out.println(fullTrame);
                 if(fullTrame.startsWith("$GPRMC")){
                     //Vérifie si le checksum est valide si c'est le cas alors ajout de la position dans le tableau contenant la trajectoire du bateau
@@ -77,7 +97,6 @@ public class Connection extends Thread implements Runnable {
                         this.bateau.ajouterPosition(new Position(Util.NMEAtoGoogleMap(trame[3], trame[4]), Util.NMEAtoGoogleMap(trame[5], trame[6])));
                     }
                 }
-
             }
         }
     }
