@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     final Fragment fragmentConnexion = new FragmentConnexion();
     public final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragmentConnexion;
+    boolean connected = false;
 
     public Connexion server;
     Bateau bateauPilot;
@@ -87,8 +88,13 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_vue1:
-                    fm.beginTransaction().hide(active).show(fragmentVue1).commit();
-                    active = fragmentVue1;
+                    if (connected) {
+                        fm.beginTransaction().hide(active).show(fragmentVue1).commit();
+                        active = fragmentVue1;
+                    } else {
+                        fm.beginTransaction().hide(active).show(fragmentConnexion).commit();
+                        active = fragmentConnexion;
+                    }
                     return true;
 
                 case R.id.navigation_vue2:
