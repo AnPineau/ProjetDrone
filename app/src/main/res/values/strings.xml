@@ -8,6 +8,6 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="marker_deletion">Boat cannot be deleted</string>
     <string name="intro_tracking">Simple and fast management of your drone</string>
-    <string name="intro_control">Easily control your dron with your mobile phone</string>
-    <string name="intro_waypoints">Easily define the trajectory of your drone</string>
+    <string name="intro_control">Easily control your drone with your mobile phone</string>
+    <string name="intro_waypoints">Easily define the trajectory of your drone with waypoints</string>
 </resources>

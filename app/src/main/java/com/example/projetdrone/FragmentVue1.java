@@ -132,8 +132,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                 tv_lat.setText(("lat: "+ String.format("%.4f", marker.getPosition().latitude)));
                 tv_long.setText(("lon: "+ String.format("%.4f", marker.getPosition().longitude)));
 
-                        .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
-                        .title("Bateau"));
+
 
                 final Handler h = new Handler();
                 h.postDelayed(new Runnable() {
