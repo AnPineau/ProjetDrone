@@ -2,7 +2,6 @@ package com.example.projetdrone;
 
 import java.util.ArrayList;
 
-
 public  class Bateau {
     public ArrayList<Position> trajectoire;
     public double vitesse;

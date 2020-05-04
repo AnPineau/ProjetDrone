@@ -1,7 +1,6 @@
 package com.example.projetdrone;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,17 +28,21 @@ import androidx.fragment.app.FragmentManager;
 
 
 public class MainActivity extends AppCompatActivity {
-    public Connection server;
-    Bateau bateauPilot;
-    Bateau bateauWaypoints;
+
     // ------------ Ici on declare les fragments et le fragment manager (FragmentVue1 desactive parce qu'il crash)
     Fragment fragmentVue1 = new FragmentVue1();
     final Fragment fragmentVue2 = new FragmentVue2();
     final Fragment fragmentVue3 = new FragmentVue3();
-    final FragmentManager fm = getSupportFragmentManager();
-    Fragment active = fragmentVue1;
+    final Fragment fragmentConnexion = new FragmentConnexion();
+    public final FragmentManager fm = getSupportFragmentManager();
+    Fragment active = fragmentConnexion;
 
+    public Connexion server;
+    Bateau bateauPilot;
+    Bateau bateauWaypoints;
 
+    public String IP;
+    public int port;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue2, "2").hide(fragmentVue2).commit();
         fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue3, "3").hide(fragmentVue3).commit();
-        fm.beginTransaction().add(R.id.fragmentcontainer, fragmentVue1, "1").commit();
+        fm.beginTransaction().add(R.id.fragmentcontainer, fragmentConnexion, "4").commit();
 
     } // onCreate
 
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }; // Navigation Item Listener
 
-    public Connection getServer()
+    public Connexion getServer()
     {
         return server;
     }

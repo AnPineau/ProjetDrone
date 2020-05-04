@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 
-public class Connection extends Thread implements Runnable {
+public class Connexion extends Thread implements Runnable {
     private volatile Socket socket;
     public Bateau bateau;
     private volatile int port=3000;
@@ -18,7 +18,7 @@ public class Connection extends Thread implements Runnable {
     private volatile String Etat;
     private volatile FragmentVue1 f1;
 
-    Connection(String url, int port){
+    Connexion(String url, int port){
         this.IP = url;
         this.port = port;
         this.bateau = new Bateau();

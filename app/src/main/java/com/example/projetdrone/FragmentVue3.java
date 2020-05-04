@@ -66,9 +66,7 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
         boat=((MainActivity)getActivity()).bateauWaypoints;
 
 
-        btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
-        // set OnClickListener for Button here
-        //if(btn_speed!=null) {
+        btn_speed = view.findViewById(R.id.speed);
             btn_speed.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -155,12 +153,11 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
         // Map en mode Hybrid et Zoom sur le port des minimes
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         // faire un zoom ici
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(boat.trajectoire.get(0).latitude, boat.trajectoire.get(0).longitude), 20f));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(boat.trajectoire.get(0).latitude, boat.trajectoire.get(0).longitude), 14f));
         marker_boat = map.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.defaultMarker(45))
                 .position(new LatLng(boat.trajectoire.get(0).latitude, boat.trajectoire.get(0).longitude))
                 .title("Bateau"));
-        //boat.trajectoire.add(new Position(marker_boat.getPosition().latitude,marker_boat.getPosition().longitude));
 
         for (int i = 0; i < trajectoire.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();

@@ -34,8 +34,7 @@ import android.widget.TextView;
 
 import static android.content.Context.SENSOR_SERVICE;
 
-
-public class FragmentVue2 extends Fragment implements OnMapReadyCallback, SensorEventListener {
+public class FragmentVue2 extends Fragment implements OnMapReadyCallback {
     private Handler animateBoat;
     ImageButton btn_speed;
     private Bateau bateau;
@@ -52,16 +51,13 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //final Bateau bateau=new Bateau();
         bateau=((MainActivity)getActivity()).bateauPilot;
 
         View view = inflater.inflate(R.layout.fragment_vue2, container, false);
-        //final Bateau bateau=new Bateau();
         bateau=((MainActivity)getActivity()).bateauPilot;
 
-        btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
-        // set OnClickListener for Button here
-        //if(btn_speed!=null) {
+        btn_speed = view.findViewById(R.id.speed); //<< initialize here
+
         btn_speed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,18 +108,15 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
                         tv_lat.setText(("lat: "+ String.format("%.4f", marker.getPosition().latitude)));
                         tv_long.setText(("lon: "+ String.format("%.4f", marker.getPosition().longitude)));
                     }
-
                 }
             }
         });
-
 
         return view;
     } // onCreateView
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.147780, -1.168557), 16.0f));
         map = googleMap;
         // Map en mode Hybrid et Zoom sur le port des minimes
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -140,45 +133,9 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                //marker.setPosition(new LatLng(bateau.trajectoire.get(0).latitude,bateau.trajectoire.get(0).longitude));
                 animateBoat.postDelayed(this, 300);
             }
         };
-
         animateBoat.postDelayed(runnable, 1000);
-
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        if (ready == true && this.isVisible()) {
-            //avancer / reculer
-            /*double axisX = (double) sensorEvent.values[0] * 0.001;
-
-            //droite / gauche
-            double axisY = (double) sensorEvent.values[1] * 0.001;
-
-            double axisZ = (double) sensorEvent.values[2] * 0.001;
-
-            //((TextView)findViewById(R.id.axeX)).setText(""+axisX);
-            //((TextView)findViewById(R.id.axeY)).setText(""+axisY);
-            //((TextView)findViewById(R.id.axeZ)).setText(""+axisZ);
-            if (marker != null) {
-                //map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),map.getCameraPosition().zoom));
-                marker.setPosition(new LatLng(marker.getPosition().latitude - axisY, marker.getPosition().longitude - axisX));
-            }
-        /*
-        if(map!=null){
-            axisX=((CameraPosition)map.getCameraPosition()).target.longitude-axisX;
-            axisY=((CameraPosition)map.getCameraPosition()).target.latitude+axisY;
-            //map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(axisY, axisX), 12.0f));
-        }
-        */
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
     }
 }

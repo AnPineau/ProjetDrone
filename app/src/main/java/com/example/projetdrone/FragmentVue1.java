@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,9 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import androidx.fragment.app.Fragment;
-
-import java.util.Objects;
-
+import androidx.fragment.app.FragmentManager;
 
 public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
@@ -29,20 +28,29 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
     private LatLng previousPos = null;
     private Marker marker;
     private Bateau bateau;
-    private Connection server;
+    private Connexion server;
     private TextView tv_lat, tv_long;
+    private FragmentManager fm;
+    private Fragment fragmentConnexion;
+    private String IP;
+    private int port;
+
 
     public FragmentVue1(){
     }
-
 
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_vue1, container, false);
+
+        IP = ((MainActivity)getActivity()).IP;
+        port = ((MainActivity)getActivity()).port;
+        Log.d("connexion", "fragmentVue1 IP, port: "+IP+", "+port);
+
         //Connection a NMEA simulator
         try {
-            this.server = new Connection("93.3.29.142", 3000);
+            this.server = new Connexion(IP, port);
             Log.d("TCP Server", "Create connection ...");
             System.out.println(this.server);
         } catch (Exception e) {
@@ -62,19 +70,15 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        //bateau = ((MainActivity) Objects.requireNonNull(getActivity())).server.bateau;
         map = googleMap;
-        // Map en mode Hybrid et Zoom sur le port des minimes
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-
-
 
         if(this.server.bateau.trajectoire.size() < 1 )
         {
             int compteur = 0;
             while (this.server.getSocket() == null )
                 try {
-                    this.server = new Connection("93.3.29.142", 3000);
+                    this.server = new Connexion(IP, port);
                     compteur += 1;
                     if(compteur > 10)
                     {
@@ -88,7 +92,6 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
         }
         while (this.server.bateau.trajectoire.size() < 1){
             Log.d("testDonnées", server.bateau.trajectoire.toString());
-
         }
         Log.d("testDonnées", server.bateau.trajectoire.toString());
 
@@ -108,8 +111,6 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
             marker = map.addMarker(new MarkerOptions()
                     .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
                     .title("Bateau"));
-
-
 
             final Handler h = new Handler();
             h.postDelayed(new Runnable() {

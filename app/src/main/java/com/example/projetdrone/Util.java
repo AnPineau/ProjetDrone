@@ -1,6 +1,5 @@
 package com.example.projetdrone;
 
-
 public class Util {
 
     public static String calculChecksum(String trame) {
@@ -36,46 +35,5 @@ public class Util {
             position = -position;
         }
         return position;
-    }
-
-    //return un tableau contenant Latitude exprimée en ddmm.mmmm, indicateur de latitude N=nord, S=sud,Longitude exprimée en dddmm.mmmm ,indicateur de longitude E=est, W=ouest
-    public static String[] GoogleMapToNMEA(double lat, double lng){
-        String[] res = new String[4];
-        if(lat<0) {
-            lat = -lat;
-            res[1] = "S";
-        }else{
-            res[1] = "N";
-        }
-        if(lng<0){
-            lng=-lng;
-            res[3] = "W";
-        }else{
-            res[3] = "E";
-        }
-
-        double entierLat =  Math.floor(lat);
-        double entierLng =  Math.floor(lng);
-
-        double decimaleLat = lat-entierLat;
-        double decimaleLng = lng-entierLng;
-
-        res[0] = Double.toString(entierLat*100+decimaleLat*60);
-        res[2] = Double.toString(entierLng*100+decimaleLng*60);
-
-        return res;
-    }
-
-    public static String createGPRMCTrame(double hour, double lat, double lng, double vitesse, int date){
-        String trame= "";
-        String[] pos = GoogleMapToNMEA(lat, lng);
-
-        trame+="$GPRMC,"+hour+",A,"+pos[0]+","+pos[1]+","+pos[2]+","+pos[3]+","+vitesse+",00.00,"+date+",,,";
-
-        String checksum = calculChecksum(trame);
-
-        trame+="*"+checksum;
-
-        return trame;
     }
 }
