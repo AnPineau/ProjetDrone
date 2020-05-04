@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import android.hardware.SensorEventListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -40,6 +41,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     private GoogleMap map;
     private Marker marker;
     private boolean ready=false;
+    private TextView tv_lat, tv_long;
 
     public FragmentVue2() {
         // constructeur vide requis ne pas enlever
@@ -48,10 +50,9 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_vue2, container, false);
         //final Bateau bateau=new Bateau();
         bateau=((MainActivity)getActivity()).bateauPilot;
-
-        View view = inflater.inflate(R.layout.fragment_vue2, container, false);
 
         btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
         // set OnClickListener for Button here
@@ -77,6 +78,9 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
             }
         });
 
+        tv_lat = view.findViewById(R.id.tv_lat_vue1);
+        tv_long = view.findViewById(R.id.tv_long_vue1);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -99,7 +103,11 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
                         bateau.getTrajectoire().get(0).latitude=lat;
                         bateau.getTrajectoire().get(0).longitude=lon;
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),map.getCameraPosition().zoom));
+
+                        tv_lat.setText(("lat: "+ String.format("%.4f", marker.getPosition().latitude)));
+                        tv_long.setText(("lon: "+ String.format("%.4f", marker.getPosition().longitude)));
                     }
+
                 }
             }
         });
