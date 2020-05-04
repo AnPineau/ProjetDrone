@@ -151,8 +151,7 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
         // Map en mode Hybrid et Zoom sur le port des minimes
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         // faire un zoom ici
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 20f));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 14f));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(boat.trajectoire.get(0).latitude, boat.trajectoire.get(0).longitude), 20f));
         marker_boat = map.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.defaultMarker(45))
                 .position(new LatLng(boat.trajectoire.get(0).latitude, boat.trajectoire.get(0).longitude))

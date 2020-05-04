@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
         bateauPilot=new Bateau();
         bateauWaypoints=new Bateau();
-        bateauPilot.ajouterPosition(new Position(46.14, -1.16));
-        bateauWaypoints.ajouterPosition(new Position(46.14, -1.16));
+        bateauPilot.ajouterPosition(new Position(46.133, -1.1637));
+        bateauWaypoints.ajouterPosition(new Position(46.133, -1.1637));
 
 
         // ---------- On recupere la barre de navigation en bas et on lui assigne un ItemListener qu'on cree plus bas

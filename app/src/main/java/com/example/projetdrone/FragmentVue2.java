@@ -123,7 +123,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
         map = googleMap;
         // Map en mode Hybrid et Zoom sur le port des minimes
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 14f));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(bateau.trajectoire.get(0).latitude, bateau.trajectoire.get(0).longitude), 14f));
 
         //Centre la camera sur la Rochelle
         marker = map.addMarker(new MarkerOptions()
