@@ -37,6 +37,19 @@
         </LinearLayout>
 
         <io.github.controlwear.virtual.joystick.android.JoystickView
+            android:id="@+id/joystick"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="40dp"
+            app:JV_backgroundColor="#88000000"
+            app:JV_buttonSizeRatio="30%"
+            app:JV_backgroundSizeRatio="50%"
+            app:JV_borderColor="#88444444"
+            app:JV_borderWidth="2dp"
+            app:JV_buttonColor="#FF888888" />
+
+        <!-- <io.github.controlwear.virtual.joystick.android.JoystickView
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +62,7 @@
             custom:JV_buttonColor="#FF888888"
             custom:JV_borderColor="#88444444"
             custom:JV_backgroundColor="#88000000"
-            custom:JV_borderWidth="2dp" />
+            custom:JV_borderWidth="2dp" /> -->
 
     </FrameLayout>
 

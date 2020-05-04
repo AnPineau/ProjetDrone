@@ -10,7 +10,7 @@ public class SplashScreenActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, IntroActivity.class));
 
     }
 
