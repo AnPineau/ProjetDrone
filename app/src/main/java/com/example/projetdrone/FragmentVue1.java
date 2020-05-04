@@ -86,6 +86,31 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                 }
             }
 
+            try {
+                Thread.sleep(5000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if(this.server.bateau.trajectoire.size() < 1)
+            {
+                int compteur = 0;
+                while (this.server.getSocket() == null)
+                try {
+                    this.server = new Connection("188.213.28.206", 3000);
+                    Thread.sleep(5000);
+                    compteur += 1;
+                    if(compteur > 10)
+                    {
+                        break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
             if (this.server.bateau.trajectoire != null && this.server.bateau.trajectoire.size() > 0) {
                 for (Position pos : this.server.bateau.trajectoire) {
                     LatLng lastPos = new LatLng(pos.getLatitude(), pos. getLongitude());
@@ -106,6 +131,9 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
                 tv_lat.setText(("lat: "+ String.format("%.4f", marker.getPosition().latitude)));
                 tv_long.setText(("lon: "+ String.format("%.4f", marker.getPosition().longitude)));
+
+                        .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
+                        .title("Bateau"));
 
                 final Handler h = new Handler();
                 h.postDelayed(new Runnable() {

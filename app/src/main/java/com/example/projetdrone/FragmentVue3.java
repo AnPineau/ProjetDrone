@@ -57,6 +57,10 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+      
+        //boat=new Bateau();
+        boat=((MainActivity)getActivity()).bateauWaypoints;
+
         View view = inflater.inflate(R.layout.fragment_vue3, container, false);
         //boat=new Bateau();
         boat=((MainActivity)getActivity()).bateauWaypoints;

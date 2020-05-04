@@ -51,6 +51,10 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //final Bateau bateau=new Bateau();
+        bateau=((MainActivity)getActivity()).bateauPilot;
+
         View view = inflater.inflate(R.layout.fragment_vue2, container, false);
         //final Bateau bateau=new Bateau();
         bateau=((MainActivity)getActivity()).bateauPilot;
