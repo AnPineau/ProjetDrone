@@ -7,11 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -29,13 +31,15 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
     private Marker marker;
     private Bateau bateau;
     private Connection server;
+    private TextView tv_lat, tv_long;
 
     public FragmentVue1(){
     }
 
-
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_vue1, container, false);
         //Connection a NMEA simulator
         try {
             this.server = new Connection("188.213.28.206", 3000);
@@ -45,8 +49,8 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
             e.printStackTrace();
         }
 
-        super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_vue1, container, false);
+        tv_lat = view.findViewById(R.id.tv_lat_vue1);
+        tv_long = view.findViewById(R.id.tv_long_vue1);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
@@ -62,6 +66,26 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
             map = googleMap;
             // Map en mode Hybrid et Zoom sur le port des minimes
             map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+            if(this.server.bateau.trajectoire.size() < 1)
+            {
+                int compteur = 0;
+                while (this.server.getSocket() == null)
+                try {
+                    this.server = new Connection("188.213.28.206", 3000);
+                    Thread.sleep(5000);
+                    compteur += 1;
+                    if(compteur > 10)
+                    {
+                        break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
             try {
                 Thread.sleep(5000);
             } catch (Exception e) {
@@ -101,6 +125,13 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                 }
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()), 15.0f));
                 marker = map.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.defaultMarker(45))
+                        .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
+                        .title("Bateau"));
+
+                tv_lat.setText(("lat: "+ String.format("%.4f", marker.getPosition().latitude)));
+                tv_long.setText(("lon: "+ String.format("%.4f", marker.getPosition().longitude)));
+
                         .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
                         .title("Bateau"));
 
