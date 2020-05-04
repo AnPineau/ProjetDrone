@@ -67,11 +67,19 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             if(this.server.bateau.trajectoire.size() < 1)
             {
-                while (!this.server.getSocket().isConnected())
+                int compteur = 0;
+                while (this.server.getSocket() == null)
                 try {
                     this.server = new Connection("188.213.28.206", 3000);
+                    Thread.sleep(5000);
+                    compteur += 1;
+                    if(compteur > 10)
+                    {
+                        break;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -81,7 +89,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
             if (this.server.bateau.trajectoire != null && this.server.bateau.trajectoire.size() > 0) {
                 for (Position pos : this.server.bateau.trajectoire) {
-                    LatLng lastPos = new LatLng(pos.getLatitude(), pos.getLongitude());
+                    LatLng lastPos = new LatLng(pos.getLatitude(), pos. getLongitude());
                     if (previousPos != null) {
 
                         map.addPolyline(new PolylineOptions()
@@ -118,5 +126,6 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                 }, 5000);
             }
     } // onMapReady
+
 }
 
