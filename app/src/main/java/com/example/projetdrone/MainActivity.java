@@ -3,6 +3,8 @@ package com.example.projetdrone;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*Window g = getWindow();
+        g.setFlags( WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.TYPE_STATUS_BAR );*/
         bat=new Bateau();
         bat.ajouterPosition(new Position(46.14, -1.16));
         setContentView(R.layout.activity_main);
