@@ -7,4 +7,5 @@
     <string name="dialog_question">Supprimer le waypoint ?</string>
     <string name="dialog_delete">Supprimer</string>
     <string name="dialog_cancel">Annuler</string>
+    <string name="marker_deletion">Le bateau n\'est pas supprimable</string>
 </resources>

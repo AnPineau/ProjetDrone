@@ -22,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -126,6 +127,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
 
         //Centre la camera sur la Rochelle
         marker = map.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(45))
                 .position(new LatLng(bateau.trajectoire.get(0).latitude, bateau.trajectoire.get(0).longitude))
                 .title("Bateau"));
         ready = true;

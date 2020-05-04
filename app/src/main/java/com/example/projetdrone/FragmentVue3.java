@@ -13,11 +13,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -29,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 import androidx.fragment.app.Fragment;
@@ -151,6 +154,7 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 20f));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.1464, -1.1727), 14f));
         marker_boat = map.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(45))
                 .position(new LatLng(boat.trajectoire.get(0).latitude, boat.trajectoire.get(0).longitude))
                 .title("Bateau"));
         //boat.trajectoire.add(new Position(marker_boat.getPosition().latitude,marker_boat.getPosition().longitude));
@@ -218,43 +222,48 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
 
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        if (markers.size() == 1) {
-                            markers.remove(marker);
-                            marker.remove();
-                            lastPos = null;
-                        } else if (index != 0 && index != markers.size() - 1) {
-                            markers.remove(marker);
-                            marker.remove();
-                            polylines.get(index - 1).remove();
-                            polylines.remove(index - 1);
-                            polylines.get(index - 1).remove();
-                            polylines.set(index - 1, map.addPolyline(new PolylineOptions()
-                                    .add(markers.get(index - 1).getPosition(), markers.get(index).getPosition())
-                                    .width(5)
-                                    .color(Color.RED)));
-                        } else if (index == 0) {
-                            markers.remove(marker);
-                            marker.remove();
-                            polylines.get(0).remove();
-                            polylines.remove(0);
-                        } else {
-                            markers.remove(marker);
-                            marker.remove();
-                            polylines.get(index - 1).remove();
-                            polylines.remove(index - 1);
-                            lastPos = markers.get(markers.size() - 1).getPosition();
-                        }
-                        for(int i=0; i<boat.trajectoire.size(); i++){
-                            if(trajectoire.get(index).longitude==boat.trajectoire.get(i).longitude && trajectoire.get(index).latitude==boat.trajectoire.get(i).latitude){
-                                boat.trajectoire.remove(i);
+                        if (!marker.equals(marker_boat)) {
+                            if (markers.size() == 1) {
+                                markers.remove(marker);
+                                marker.remove();
+                                lastPos = null;
+                            } else if (index != 0 && index != markers.size() - 1) {
+                                markers.remove(marker);
+                                marker.remove();
+                                polylines.get(index - 1).remove();
+                                polylines.remove(index - 1);
+                                polylines.get(index - 1).remove();
+                                polylines.set(index - 1, map.addPolyline(new PolylineOptions()
+                                        .add(markers.get(index - 1).getPosition(), markers.get(index).getPosition())
+                                        .width(5)
+                                        .color(Color.RED)));
+                            } else if (index == 0) {
+                                markers.remove(marker);
+                                marker.remove();
+                                polylines.get(0).remove();
+                                polylines.remove(0);
+                            } else {
+                                markers.remove(marker);
+                                marker.remove();
+                                polylines.get(index - 1).remove();
+                                polylines.remove(index - 1);
+                                lastPos = markers.get(markers.size() - 1).getPosition();
                             }
-                        }
-                        trajectoire.remove(index);
-                        // ecriture dans le xml apres suppression du waypoint
-                        try {
-                            writeWaypoints();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            for (int i = 0; i < boat.trajectoire.size(); i++) {
+                                if (trajectoire.get(index).longitude == boat.trajectoire.get(i).longitude && trajectoire.get(index).latitude == boat.trajectoire.get(i).latitude) {
+                                    boat.trajectoire.remove(i);
+                                }
+                            }
+                            trajectoire.remove(index);
+                            // ecriture dans le xml apres suppression du waypoint
+                            try {
+                                writeWaypoints();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast toast = Toast.makeText(getActivity().getApplicationContext(), R.string.marker_deletion, Toast.LENGTH_SHORT);
+                            toast.show();
                         }
                     }
                 });
