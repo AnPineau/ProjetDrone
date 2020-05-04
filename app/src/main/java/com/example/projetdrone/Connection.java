@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 
 
 public class Connection extends Thread implements Runnable {
-    private Socket socket;
+    private volatile Socket socket;
     public Bateau bateau;
     private volatile int port=3000;
     private volatile String IP= "1813.28.206";
@@ -66,15 +66,18 @@ public class Connection extends Thread implements Runnable {
                 }
                 trame = fullTrame.split(",");
                 System.out.println(fullTrame);
-                //Vérifie si le checksum est valide si c'est le cas alors ajout de la position dans le tableau contenant la trajectoire du bateau
-                String checksum = Util.calculChecksum(fullTrame);
-                Log.d("TCP Server", "TRY tram ...");
+                if(fullTrame.startsWith("$GPRMC")){
+                    //Vérifie si le checksum est valide si c'est le cas alors ajout de la position dans le tableau contenant la trajectoire du bateau
+                    String checksum = Util.calculChecksum(fullTrame);
+                    Log.d("TCP Server", "TRY tram ...");
 
-                if (checksum.equals(trame[9].substring(1, 3))) {
-                    Log.d("TCP Server", "NMEA TRAM OK ...");
+                    if (checksum.equals(trame[12].substring(1, 3))) {
+                        Log.d("TCP Server", "NMEA TRAM OK ...");
 
-                    this.bateau.ajouterPosition(new Position(Util.NMEAtoGoogleMap(trame[3], trame[4]), Util.NMEAtoGoogleMap(trame[5], trame[6])));
+                        this.bateau.ajouterPosition(new Position(Util.NMEAtoGoogleMap(trame[3], trame[4]), Util.NMEAtoGoogleMap(trame[5], trame[6])));
+                    }
                 }
+
             }
         }
     }
@@ -85,5 +88,61 @@ public class Connection extends Thread implements Runnable {
                 "socket=" + socket +
                 ", bateau=" + bateau +
                 '}';
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public Bateau getBateau() {
+        return bateau;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getIP() {
+        return IP;
+    }
+
+    public BufferedReader getBr() {
+        return br;
+    }
+
+    public String getEtat() {
+        return Etat;
+    }
+
+    public FragmentVue1 getF1() {
+        return f1;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public void setBateau(Bateau bateau) {
+        this.bateau = bateau;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setIP(String IP) {
+        this.IP = IP;
+    }
+
+    public void setBr(BufferedReader br) {
+        this.br = br;
+    }
+
+    public void setEtat(String etat) {
+        Etat = etat;
+    }
+
+    public void setF1(FragmentVue1 f1) {
+        this.f1 = f1;
     }
 }

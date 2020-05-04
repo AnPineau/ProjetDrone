@@ -58,9 +58,9 @@ public class IntroActivity extends AppCompatActivity {
         btnBefore = findViewById( R.id.btn_before);
 
         final List<ScreenItem> mList = new ArrayList<>();
-        mList.add(new ScreenItem("Tracking","Simple and fast management of your drone", R.drawable.tracking));
-        mList.add(new ScreenItem("Control","Easily control your dron with your mobile phone", R.drawable.controller));
-        mList.add(new ScreenItem("Waypoints","Easily define the trajectory of your drone", R.drawable.waypoints));
+        mList.add(new ScreenItem(getResources().getString(R.string.title_tracking),getResources().getString(R.string.intro_tracking), R.drawable.tracking));
+        mList.add(new ScreenItem(getResources().getString(R.string.title_control),getResources().getString(R.string.intro_control), R.drawable.controller));
+        mList.add(new ScreenItem(getResources().getString(R.string.title_waypoints),getResources().getString(R.string.intro_waypoints), R.drawable.waypoints));
 
         screenPager = findViewById( R.id.screen_viewpager);
         introViewPagerAdapter = new IntroViewPagerAdapter(this,mList);

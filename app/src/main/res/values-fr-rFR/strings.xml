@@ -7,4 +7,7 @@
     <string name="dialog_question">Supprimer le waypoint ?</string>
     <string name="dialog_delete">Supprimer</string>
     <string name="dialog_cancel">Annuler</string>
+    <string name="intro_tracking">Gestion simple et rapide de votre drone</string>
+    <string name="intro_control">Contrôlez facilement votre drone avec votre téléphone portable</string>
+    <string name="intro_waypoints">Définissez facilement la trajectoire de votre drone</string>
 </resources>

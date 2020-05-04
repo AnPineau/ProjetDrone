@@ -49,7 +49,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //final Bateau bateau=new Bateau();
-        bateau=((MainActivity)getActivity()).bat;
+        bateau=((MainActivity)getActivity()).bateauPilot;
 
         View view = inflater.inflate(R.layout.fragment_vue2, container, false);
 
@@ -95,7 +95,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
                     if (marker != null) {
                         double lat = marker.getPosition().latitude + (vitesse * Vy * ((double)strength/100));
                         double lon = marker.getPosition().longitude + (vitesse * Vx * ((double)strength/100));
-                        //marker.setPosition(new LatLng(lat, lon));
+                        marker.setPosition(new LatLng(lat, lon));
                         bateau.getTrajectoire().get(0).latitude=lat;
                         bateau.getTrajectoire().get(0).longitude=lon;
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),map.getCameraPosition().zoom));
@@ -126,7 +126,7 @@ public class FragmentVue2 extends Fragment implements OnMapReadyCallback, Sensor
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                marker.setPosition(new LatLng(bateau.trajectoire.get(0).latitude,bateau.trajectoire.get(0).longitude));
+                //marker.setPosition(new LatLng(bateau.trajectoire.get(0).latitude,bateau.trajectoire.get(0).longitude));
                 animateBoat.postDelayed(this, 300);
             }
         };
