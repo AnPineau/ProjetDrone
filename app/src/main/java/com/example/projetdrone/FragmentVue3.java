@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,6 +45,7 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private ArrayList<Position> trajectoire = new ArrayList<>();
     private File waypointsXML;
+    private TextView tv_lat, tv_long;
 
     public FragmentVue3() {
         // constructeur vide requis ne pas enlever
@@ -52,9 +54,10 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_vue3, container, false);
         //boat=new Bateau();
         boat=((MainActivity)getActivity()).bateauWaypoints;
-        View view = inflater.inflate(R.layout.fragment_vue3, container, false);
+
 
         btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
         // set OnClickListener for Button here
@@ -80,6 +83,9 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
                 }
             });
         //}
+
+        tv_lat = view.findViewById(R.id.tv_lat_vue1);
+        tv_long = view.findViewById(R.id.tv_long_vue1);
 
         MapFragment mapFragment = (MapFragment) Objects.requireNonNull(getActivity()).getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -124,6 +130,9 @@ public class FragmentVue3 extends Fragment implements OnMapReadyCallback {
                 }
                 marker_boat.setPosition(new LatLng(boat.trajectoire.get(0).latitude,boat.trajectoire.get(0).longitude));
                 animateBoat.postDelayed(this, 300);
+
+                tv_lat.setText(("lat: "+ String.format("%.4f", marker_boat.getPosition().latitude)));
+                tv_long.setText(("lon: "+ String.format("%.4f", marker_boat.getPosition().longitude)));
             }
         };
 

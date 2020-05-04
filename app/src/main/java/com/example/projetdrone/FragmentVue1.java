@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,6 +30,7 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
     private Marker marker;
     private Bateau bateau;
     private Connection server;
+    private TextView tv_lat, tv_long;
 
     public FragmentVue1(){
     }
@@ -36,6 +38,8 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_vue1, container, false);
         //Connection a NMEA simulator
         try {
             this.server = new Connection("188.213.28.206", 3000);
@@ -45,8 +49,8 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
             e.printStackTrace();
         }
 
-        super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_vue1, container, false);
+        tv_lat = view.findViewById(R.id.tv_lat_vue1);
+        tv_long = view.findViewById(R.id.tv_long_vue1);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
@@ -103,6 +107,9 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                 marker = map.addMarker(new MarkerOptions()
                         .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
                         .title("Bateau"));
+
+                tv_lat.setText(("lat: "+ String.format("%.4f", marker.getPosition().latitude)));
+                tv_long.setText(("lon: "+ String.format("%.4f", marker.getPosition().longitude)));
 
                 final Handler h = new Handler();
                 h.postDelayed(new Runnable() {
