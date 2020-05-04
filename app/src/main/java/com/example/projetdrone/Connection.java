@@ -1,5 +1,6 @@
 package com.example.projetdrone;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -31,6 +32,7 @@ public class Connection extends Thread implements Runnable {
             this.socket = new Socket(IP,port);
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             Log.d("connected", socket.toString());
+            Log.d("connected", "CONNECTED");
             return true;
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -53,10 +55,25 @@ public class Connection extends Thread implements Runnable {
 
                 try {
                     fullTrame = br.readLine();
+
+            if (br == null || socket == null) {
+                connexion();
+            } else {
+                try {
+                    while (!br.ready()) {
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    fullTrame = br.readLine();
+                    Log.d("connected", fullTrame);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 trame = fullTrame.split(",");
+
                 if (fullTrame.startsWith("$GPRMC")) {
                     //Vérifie si le checksum est valide si c'est le cas alors ajout de la position dans le tableau contenant la trajectoire du bateau
                     String checksum = Util.calculChecksum(fullTrame);
@@ -65,6 +82,18 @@ public class Connection extends Thread implements Runnable {
 
                     if (checksum.equals(trame[12].substring(1, 3))) {
                         Log.d("TCP Server", "NMEA TRAM OK ...");
+                        this.bateau.ajouterPosition(new Position(Util.NMEAtoGoogleMap(trame[3], trame[4]), Util.NMEAtoGoogleMap(trame[5], trame[6])));
+                    }
+                }
+                System.out.println(fullTrame);
+                if(fullTrame.startsWith("$GPRMC")){
+                    //Vérifie si le checksum est valide si c'est le cas alors ajout de la position dans le tableau contenant la trajectoire du bateau
+                    String checksum = Util.calculChecksum(fullTrame);
+                    Log.d("TCP Server", "TRY tram ...");
+
+                    if (checksum.equals(trame[12].substring(1, 3))) {
+                        Log.d("TCP Server", "NMEA TRAM OK ...");
+
                         this.bateau.ajouterPosition(new Position(Util.NMEAtoGoogleMap(trame[3], trame[4]), Util.NMEAtoGoogleMap(trame[5], trame[6])));
                     }
                 }

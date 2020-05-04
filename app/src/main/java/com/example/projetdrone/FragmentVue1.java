@@ -13,6 +13,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,7 +35,6 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
 
     public FragmentVue1(){
     }
-
 
     @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,14 +67,20 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
             // Map en mode Hybrid et Zoom sur le port des minimes
             map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
-
-
         if(this.server.bateau.trajectoire.size() < 1 )
             {
                 int compteur = 0;
                 while (this.server.getSocket() == null )
                 try {
                     this.server = new Connection("93.3.29.142", 3000);
+                  
+            if(this.server.bateau.trajectoire.size() < 1)
+            {
+                int compteur = 0;
+                while (this.server.getSocket() == null)
+                try {
+                    this.server = new Connection("188.213.28.206", 3000);
+                    Thread.sleep(5000);
                     compteur += 1;
                     if(compteur > 10)
                     {
@@ -93,6 +99,33 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
         Log.d("testDonnées", server.bateau.trajectoire.toString());
 
         if (this.server.bateau.trajectoire != null && this.server.bateau.trajectoire.size() > 0) {
+
+            try {
+                Thread.sleep(5000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if(this.server.bateau.trajectoire.size() < 1)
+            {
+                int compteur = 0;
+                while (this.server.getSocket() == null)
+                try {
+                    this.server = new Connection("188.213.28.206", 3000);
+                    Thread.sleep(5000);
+                    compteur += 1;
+                    if(compteur > 10)
+                    {
+                        break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            if (this.server.bateau.trajectoire != null && this.server.bateau.trajectoire.size() > 0) {
                 for (Position pos : this.server.bateau.trajectoire) {
                     LatLng lastPos = new LatLng(pos.getLatitude(), pos. getLongitude());
                     if (previousPos != null) {
@@ -108,6 +141,15 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
                 marker = map.addMarker(new MarkerOptions()
                         .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
                         .title("Bateau"));
+
+
+
+                        .icon(BitmapDescriptorFactory.defaultMarker(45))
+                        .position(new LatLng(this.server.bateau.getLastPosition().getLatitude(), this.server.bateau.getLastPosition().getLongitude()))
+                        .title("Bateau"));
+
+                tv_lat.setText(("lat: "+ String.format("%.4f", marker.getPosition().latitude)));
+                tv_long.setText(("lon: "+ String.format("%.4f", marker.getPosition().longitude)));
 
 
 

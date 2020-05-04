@@ -1,15 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.projetdrone.FragmentVue2">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.MapFragment"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:orientation="vertical"
+            android:padding="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_lat_vue1"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_long_vue1"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <io.github.controlwear.virtual.joystick.android.JoystickView
+            android:id="@+id/joystick"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="40dp"
+            app:JV_backgroundColor="#88000000"
+            app:JV_buttonSizeRatio="30%"
+            app:JV_backgroundSizeRatio="50%"
+            app:JV_borderColor="#88444444"
+            app:JV_borderWidth="2dp"
+            app:JV_buttonColor="#FF888888" />
+
+        <!-- <io.github.controlwear.virtual.joystick.android.JoystickView
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/joystick"
+            android:layout_gravity="bottom"
+            android:padding="0dp"
+            android:layout_margin="0dp"
+            custom:JV_buttonSizeRatio="15%"
+            custom:JV_backgroundSizeRatio="25%"
+            custom:JV_buttonColor="#FF888888"
+            custom:JV_borderColor="#88444444"
+            custom:JV_backgroundColor="#88000000"
+            custom:JV_borderWidth="2dp" /> -->
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="0"
+        app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="5"
+        android:layout_gravity="top"/>
+    <ImageButton
+        android:id="@+id/speed"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:src="@drawable/ic_speed"
+        android:layout_gravity="top"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

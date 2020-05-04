@@ -2,168 +2,183 @@ package com.example.projetdrone;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+
+import android.os.Handler;
+import android.util.Log;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+
+import androidx.fragment.app.Fragment;
+import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.ArrayList;
+import android.hardware.SensorEventListener;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
+import static android.content.Context.SENSOR_SERVICE;
 
-public class FragmentVue2 extends Fragment implements OnMapReadyCallback {
 
+public class FragmentVue2 extends Fragment implements OnMapReadyCallback, SensorEventListener {
+    private Handler animateBoat;
+    ImageButton btn_speed;
+    private Bateau bateau;
     private GoogleMap map;
-    private LatLng lastPos = null;
-    private ArrayList<Marker> markers = new ArrayList<>();
-    private ArrayList<Polyline> polylines = new ArrayList<>();
-    private ArrayList<Position> trajectoire = new ArrayList<>();
+    private Marker marker;
+    private boolean ready=false;
+    private TextView tv_lat, tv_long;
 
     public FragmentVue2() {
         // constructeur vide requis ne pas enlever
     }
 
-    @Override // onCreateView equivalent de onCreate mais pour les fragments, il doit retourner view
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //final Bateau bateau=new Bateau();
+        bateau=((MainActivity)getActivity()).bateauPilot;
+
         View view = inflater.inflate(R.layout.fragment_vue2, container, false);
+        //final Bateau bateau=new Bateau();
+        bateau=((MainActivity)getActivity()).bateauPilot;
 
-        /*ServerSocket welcomeSocket = null;
-        try {
-            String trame;
-            welcomeSocket = new ServerSocket(55556);
-            welcomeSocket.setSoTimeout(5000);
-            Socket connectionSocket = welcomeSocket.accept();
-            PrintWriter out = new PrintWriter(connectionSocket.getOutputStream(), true);
-            for (int i = 0; i < trajectoire.size(); i++) {
-                trame = createGPRMCTrame(185757.550f, trajectoire.get(i).getLatitude(), trajectoire.get(i).getLongitude(), trajectoire.get(i).getVitesse(), 150318);
-                out.println(trame);
-                Thread.sleep(500);
+        btn_speed = (ImageButton)view.findViewById(R.id.speed); //<< initialize here
+        // set OnClickListener for Button here
+        //if(btn_speed!=null) {
+        btn_speed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //server.bateau.setVitesse()
+                //final int index = markers.indexOf(marker);
+                //Créé une fenetre de dialogue
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                final EditText input = new EditText(getContext());
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                input.setText(Double.toString(bateau.getVitesse()));
+                dialog.setView(input);
+                dialog.setNegativeButton("Changer vitesse", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        bateau.setVitesse(Double.parseDouble(input.getText().toString()));
+                    }
+                });
+                dialog.show();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
+        });
 
-        /*getFragmentManager();
-        SupportMapFragment mapFragment = (SupportMapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
-        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager()
+        tv_lat = view.findViewById(R.id.tv_lat_vue1);
+        tv_long = view.findViewById(R.id.tv_long_vue1);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        JoystickView joystick = view.findViewById(R.id.joystick);
+        joystick.setFixedCenter(false);
+        joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
+            @Override
+            public void onMove(int angle, int strength) {
+                Log.d("joystick", "Angle, strength: "+angle+", "+strength);
+                if (ready) {
+                    double Vx = Math.cos(Math.toRadians(angle));
+                    double Vy = Math.sin(Math.toRadians(angle));
+                    double vitesse = 0.00003*bateau.vitesse;
+                    Log.d("joystick", "Vx, Vy: "+Vx+", "+Vy);
+                    if (marker != null) {
+                        double lat = marker.getPosition().latitude + (vitesse * Vy * ((double)strength/100));
+                        double lon = marker.getPosition().longitude + (vitesse * Vx * ((double)strength/100));
+                        marker.setPosition(new LatLng(lat, lon));
+                        bateau.getTrajectoire().get(0).latitude=lat;
+                        bateau.getTrajectoire().get(0).longitude=lon;
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),map.getCameraPosition().zoom));
+
+                        tv_lat.setText(("lat: "+ String.format("%.4f", marker.getPosition().latitude)));
+                        tv_long.setText(("lon: "+ String.format("%.4f", marker.getPosition().longitude)));
+                    }
+
+                }
+            }
+        });
+
 
         return view;
     } // onCreateView
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.147780, -1.168557), 16.0f));
         map = googleMap;
+        // Map en mode Hybrid et Zoom sur le port des minimes
+        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(bateau.trajectoire.get(0).latitude, bateau.trajectoire.get(0).longitude), 14f));
 
         //Centre la camera sur la Rochelle
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.14, -1.16), 12.0f));
-        for (int i = 0; i < trajectoire.size(); i++) {
-            MarkerOptions markerOptions = new MarkerOptions();
-            LatLng latLng = new LatLng(trajectoire.get(i).getLatitude(), trajectoire.get(i).getLongitude());
-            markerOptions.position(latLng);
-            markers.add(map.addMarker(markerOptions));
-            if (lastPos != null) {
-                polylines.add(map.addPolyline(new PolylineOptions()
-                        .add(lastPos, latLng)
-                        .width(5)
-                        .color(Color.RED)));
+        marker = map.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(45))
+                .position(new LatLng(bateau.trajectoire.get(0).latitude, bateau.trajectoire.get(0).longitude))
+                .title("Bateau"));
+        ready = true;
+
+        animateBoat=new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                //marker.setPosition(new LatLng(bateau.trajectoire.get(0).latitude,bateau.trajectoire.get(0).longitude));
+                animateBoat.postDelayed(this, 300);
             }
-            lastPos = latLng;
+        };
+
+        animateBoat.postDelayed(runnable, 1000);
+
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (ready == true && this.isVisible()) {
+            //avancer / reculer
+            /*double axisX = (double) sensorEvent.values[0] * 0.001;
+
+            //droite / gauche
+            double axisY = (double) sensorEvent.values[1] * 0.001;
+
+            double axisZ = (double) sensorEvent.values[2] * 0.001;
+
+            //((TextView)findViewById(R.id.axeX)).setText(""+axisX);
+            //((TextView)findViewById(R.id.axeY)).setText(""+axisY);
+            //((TextView)findViewById(R.id.axeZ)).setText(""+axisZ);
+            if (marker != null) {
+                //map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),map.getCameraPosition().zoom));
+                marker.setPosition(new LatLng(marker.getPosition().latitude - axisY, marker.getPosition().longitude - axisX));
+            }
+        /*
+        if(map!=null){
+            axisX=((CameraPosition)map.getCameraPosition()).target.longitude-axisX;
+            axisY=((CameraPosition)map.getCameraPosition()).target.latitude+axisY;
+            //map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(axisY, axisX), 12.0f));
         }
-        //Listener sur le clic sur la googleMap
-        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                trajectoire.add(new Position(latLng.latitude, latLng.longitude, 10));
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                //Centre la camera sur position cliquer
-                map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                markers.add(map.addMarker(markerOptions));
+        */
+        }
+    }
 
-                //Trace un trait entre les 2 derniers waypoint créé
-                if (lastPos != null) {
-                    polylines.add(map.addPolyline(new PolylineOptions()
-                            .add(lastPos, latLng)
-                            .width(5)
-                            .color(Color.RED)));
-                }
-                lastPos = latLng;
-            }
-        });
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
 
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(final Marker marker) {
-                final int index = markers.indexOf(marker);
-                //Créé une fenetre de dialogue
-                AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                final EditText input = new EditText(getActivity());
-                input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                input.setText(Double.toString(trajectoire.get(index).getVitesse()));
-                dialog.setView(input);
-                dialog.setNegativeButton("Changer vitesse", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        trajectoire.get(index).setVitesse(Double.parseDouble(input.getText().toString()));
-                    }
-                });
-                dialog.setPositiveButton("Supprimer", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (markers.size() == 1) {
-                            markers.remove(marker);
-                            marker.remove();
-                            lastPos = null;
-                        } else if (index != 0 && index != markers.size() - 1) {
-                            markers.remove(marker);
-                            marker.remove();
-                            polylines.get(index - 1).remove();
-                            polylines.remove(index - 1);
-                            polylines.get(index - 1).remove();
-                            polylines.set(index - 1, map.addPolyline(new PolylineOptions()
-                                    .add(markers.get(index - 1).getPosition(), markers.get(index).getPosition())
-                                    .width(5)
-                                    .color(Color.RED)));
-                        } else if (index == 0) {
-                            markers.remove(marker);
-                            marker.remove();
-                            polylines.get(0).remove();
-                            polylines.remove(0);
-                        } else {
-                            markers.remove(marker);
-                            marker.remove();
-                            polylines.get(index - 1).remove();
-                            polylines.remove(index - 1);
-                            lastPos = markers.get(markers.size() - 1).getPosition();
-                        }
-                    }
-                });
-                dialog.show();
-                return true;
-            }
-        });
-    } // onMapReady
-
-
+    }
 }

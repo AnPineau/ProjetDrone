@@ -1,14 +1,10 @@
 package com.example.projetdrone;
 
 import android.os.Bundle;
-/*import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;*/
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -34,6 +30,8 @@ import androidx.fragment.app.FragmentManager;
 
 public class MainActivity extends AppCompatActivity {
     public Connection server;
+    Bateau bateauPilot;
+    Bateau bateauWaypoints;
     // ------------ Ici on declare les fragments et le fragment manager (FragmentVue1 desactive parce qu'il crash)
     Fragment fragmentVue1 = new FragmentVue1();
     final Fragment fragmentVue2 = new FragmentVue2();
@@ -47,9 +45,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        bateauPilot=new Bateau();
+        bateauWaypoints=new Bateau();
+        bateauPilot.ajouterPosition(new Position(46.14, -1.16));
+        bateauWaypoints.ajouterPosition(new Position(46.14, -1.16));
         setContentView(R.layout.activity_main);
 
+        setContentView(R.layout.activity_main);
 
+        bateauPilot=new Bateau();
+        bateauWaypoints=new Bateau();
+        bateauPilot.ajouterPosition(new Position(46.133, -1.1637));
+        bateauWaypoints.ajouterPosition(new Position(46.133, -1.1637));
 
 
         // ---------- On recupere la barre de navigation en bas et on lui assigne un ItemListener qu'on cree plus bas
@@ -76,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_vue1:
                     fm.beginTransaction().hide(active).show(fragmentVue1).commit();
                     active = fragmentVue1;
-                    //Toast.makeText(getApplicationContext(), "Vue 1 désactivée", Toast.LENGTH_SHORT).show();
-                    //return false;
                     return true;
 
                 case R.id.navigation_vue2:

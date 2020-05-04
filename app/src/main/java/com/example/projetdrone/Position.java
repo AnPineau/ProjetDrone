@@ -2,14 +2,12 @@ package com.example.projetdrone;
 
 
 public class Position {
-    private double latitude;
-    private double longitude;
-    private double vitesse;
+    public double latitude;
+    public double longitude;
 
-    public Position(double latitude, double longitude, double vitesse){
+    public Position(double latitude, double longitude){
         this.latitude = latitude;
         this.longitude = longitude;
-        this.vitesse = vitesse;
     }
 
     public double getLatitude(){
@@ -20,7 +18,4 @@ public class Position {
         return this.longitude;
     }
 
-    public double getVitesse(){ return this.vitesse; }
-
-    public void setVitesse(double vitesse){ this.vitesse = vitesse; }
 }
