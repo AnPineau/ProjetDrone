@@ -8,16 +8,33 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 
-public class Connection implements Runnable {
+public class Connection extends Thread {
     private Socket socket;
     public Bateau bateau;
+    private volatile int port=3000;
+    private volatile String IP= "188.213.28.206";
+    private volatile BufferedReader br;
+    private volatile String Etat;
+    private volatile FragmentVue1 f1;
+
+    Connection(FragmentVue1 f1){
+        this.f1 = f1;
+        this.Etat = "Disconnect";
+    }
+
+
 
     public Connection(String serverAddress, int serverPort) throws Exception {
-        this.socket = new Socket(serverAddress, serverPort);
-        this.bateau = new Bateau();
-        System.out.println(this.bateau);
-        Thread th = new Thread(this);
-        th.start();
+        try {
+            this.socket = new Socket(IP,port);
+            this.bateau = new Bateau();
+            Thread th = new Thread(this);
+            th.start();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
@@ -25,20 +42,19 @@ public class Connection implements Runnable {
         String fullTrame = null;
         String[] trame;
         while (true) {
-            BufferedReader in = null;
             try {
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             try {
-                while (!in.ready()) {}
+                while (!br.ready()) {}
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                fullTrame = in.readLine();
+                fullTrame = br.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
             }
