@@ -66,11 +66,6 @@ public class FragmentVue1 extends Fragment implements OnMapReadyCallback {
             map = googleMap;
             // Map en mode Hybrid et Zoom sur le port des minimes
             map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-            try {
-                Thread.sleep(5000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             if(this.server.bateau.trajectoire.size() < 1)
             {
